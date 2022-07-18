@@ -84,3 +84,45 @@ spec:
       dnsPolicy: ClusterFirst
       securityContext: {}
       schedulerName: default-scheduler
+--- 
+kind: Service
+apiVersion: v1
+metadata:
+  name: postgresql
+  labels:
+    app: nodejs-gitops
+  annotations:
+    description: Exposes the database server
+spec:
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: postgresql
+      protocol: TCP
+      port: 5432
+      targetPort: 5432
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    name: postgresql
+status:
+  loadBalancer: {}
+--- 
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgresql
+  finalizers:
+    - kubernetes.io/pvc-protection
+  labels:
+    app: nodejs-gitops
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: gp2
+  volumeMode: Filesystem

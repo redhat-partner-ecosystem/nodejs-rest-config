@@ -1,3 +1,5 @@
 resources:
   - namespaces.yaml
   - rolebindings.yaml
+  - app.yaml
+  - db.yaml
