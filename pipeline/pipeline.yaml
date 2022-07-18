@@ -35,7 +35,7 @@ spec:
     - default: nodejs-gitops-pipeline
       name: NAMESPACE
       type: string
-    - default: develop
+    - default: foo/bar/develop
       name: REF
       type: string
 
