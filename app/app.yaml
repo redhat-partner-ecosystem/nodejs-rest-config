@@ -68,6 +68,6 @@ spec:
   source:
     directory:
       recurse: true
-    path: app/gitops
+    path: pipeline
     repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
     targetRevision: main
