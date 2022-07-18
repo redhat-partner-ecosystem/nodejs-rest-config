@@ -1,0 +1,11 @@
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  name: nodejs-gitops
+  labels:
+    app: nodejs-gitops
+  annotations:
+    description: nodejs-gitops application image
+spec:
+  lookupPolicy:
+    local: false

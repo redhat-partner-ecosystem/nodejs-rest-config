@@ -1,0 +1,16 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: el-nodejs-gitops
+  labels:
+    app.kubernetes.io/managed-by: EventListener
+    app.kubernetes.io/part-of: Triggers
+    eventlistener: event-listener-nodejs-gitops
+spec:
+  to:
+    kind: Service
+    name: el-nodejs-gitops
+    weight: 100
+  port:
+    targetPort: 8080
+  wildcardPolicy: None

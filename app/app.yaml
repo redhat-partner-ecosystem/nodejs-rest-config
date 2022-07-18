@@ -1,0 +1,69 @@
+kind: AppProject
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: default-app-project
+  namespace: openshift-gitops
+spec:
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+  destinations:
+    - namespace: "*"
+      server: "*"
+  sourceRepos:
+    - "*"
+status: {}
+---
+kind: Application
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: app-config-dev
+  namespace: openshift-gitops
+spec:
+  project: default-app-project
+  revisionHistoryLimit: 3
+  destination:
+    namespace: nodejs-gitops-dev
+    server: https://kubernetes.default.svc
+  source:
+    directory:
+      recurse: true
+    path: app/dev
+    repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
+    targetRevision: main
+---
+kind: Application
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: app-config-prod
+  namespace: openshift-gitops
+spec:
+  project: default-app-project
+  revisionHistoryLimit: 3
+  destination:
+    namespace: nodejs-gitops
+    server: https://kubernetes.default.svc
+  source:
+    directory:
+      recurse: true
+    path: app/prod
+    repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
+    targetRevision: main
+---
+kind: Application
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: app-config-pipeline
+  namespace: openshift-gitops
+spec:
+  project: default-app-project
+  revisionHistoryLimit: 3
+  destination:
+    namespace: nodejs-gitops-pipeline
+    server: https://kubernetes.default.svc
+  source:
+    directory:
+      recurse: true
+    path: app/gitops
+    repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
+    targetRevision: main
