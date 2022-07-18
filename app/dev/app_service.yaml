@@ -1,0 +1,25 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: nodejs-gitops
+  labels:
+    app: nodejs-gitops
+  annotations:
+    description: Exposes and load balances the application pods
+    service.alpha.openshift.io/dependencies: '[{"name": "postgresql", "kind": "Service"}]'
+spec:
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: web
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    name: nodejs-gitops
+status:
+  loadBalancer: {}
