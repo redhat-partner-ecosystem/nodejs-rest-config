@@ -49,13 +49,17 @@ spec:
         resources: []
         workspaces:
           - name: workspace
-            volumeClaimTemplate:
-              metadata:
-                labels:
-                  tekton.dev/pipeline: pipeline-nodejs-gitops
-              spec:
-                accessModes:
-                  - ReadWriteOnce
-                resources:
-                  requests:
-                    storage: 1Gi
+            persistentVolumeClaim:
+              claimName: nodejs-build-workspace
+
+          #- name: workspace
+          #  volumeClaimTemplate:
+          #    metadata:
+          #      labels:
+          #        tekton.dev/pipeline: pipeline-nodejs-gitops
+          #    spec:
+          #      accessModes:
+          #        - ReadWriteOnce
+          #      resources:
+          #        requests:
+          #          storage: 1Gi
