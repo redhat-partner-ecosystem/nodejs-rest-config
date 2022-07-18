@@ -22,11 +22,13 @@ spec:
       script: |
         #!/usr/bin/env bash
 
-        echo "ref: $(params.REF)"
-
         IFS="/" read -a branchref <<< "$(params.REF)"
 
+        echo "adding tag $(params.IMAGE_NAME):$(params.commit)"
+
         oc tag "$(params.IMAGE_NAME)":latest "$(params.IMAGE_NAME)":"$(params.commit)" -n "$(params.NAMESPACE)"
+
+        echo "adding tag $(params.IMAGE_NAME):${branchref[-1]}"
 
         oc tag "$(params.IMAGE_NAME)":latest "$(params.IMAGE_NAME)":"${branchref[-1]}" -n "$(params.NAMESPACE)"
 --- 
