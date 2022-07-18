@@ -3,4 +3,4 @@
 resources:
   - namespaces.yaml
   - rolebindings.yaml
-  - "../../pipeline/event_listener.yaml"
+  - pipeline/event_listener.yaml

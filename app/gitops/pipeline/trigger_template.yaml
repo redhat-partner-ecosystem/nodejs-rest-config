@@ -1,0 +1,61 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: trigger-template-nodejs-gitops
+spec:
+  params:
+    - name: git-revision
+    - name: git-commit-message
+    - name: git-repo-url
+    - name: git-repo-name
+    - name: content-type
+    - name: pusher-name
+    - name: ref
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: nodejs-gitops-
+      spec:
+        params:
+          - name: APP_NAME
+            value: nodejs-gitops
+          - name: GIT_REPO
+            value: >-
+              https://github.com/redhat-capgemini-exchange/nodejs-rest.git
+          - name: GIT_REVISION
+            value: "develop"
+          - name: GIT_COMMIT
+            value: $(tt.params.git-revision)
+          - name: PATH_CONTEXT
+            value: .
+          - name: VERSION
+            value: 16-ubi8
+          - name: IMAGE_STREAM
+            value: >-
+              image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops
+          - name: IMAGE_NAME
+            value: nodejs-gitops
+          - name: IMAGE_TAG
+            value: latest
+          - name: NAMESPACE
+            value: nodejs-gitops-pipeline
+          - name: REF
+            value: $(tt.params.ref)
+
+        pipelineRef:
+          name: pipeline-nodejs-gitops
+
+        resources: []
+        workspaces:
+          - name: workspace
+            volumeClaimTemplate:
+              metadata:
+                labels:
+                  tekton.dev/pipeline: pipeline-nodejs-gitops
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 1Gi
