@@ -45,9 +45,12 @@ spec:
       type: string
       default: latest
 
-    - name: APP_MANIFESTS_GIT
+    - name: MANIFESTS_GIT
       type: string
       default: "https://github.com/redhat-capgemini-exchange/nodejs-gitops"
+    - name: MANIFESTS_GIT_BRANCH
+      type: string
+      default: main
 
   workspaces:
     - name: workspace

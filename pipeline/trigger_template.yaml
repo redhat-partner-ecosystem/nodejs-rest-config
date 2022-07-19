@@ -49,8 +49,10 @@ spec:
           - name: IMAGE_TAG
             value: latest
 
-          - name: APP_MANIFESTS_GIT
+          - name: MANIFESTS_GIT
             default: "https://github.com/redhat-capgemini-exchange/nodejs-gitops"
+          - name: MANIFESTS_GIT_BRANCH
+            default: main
 
         pipelineRef:
           name: pipeline-nodejs-gitops

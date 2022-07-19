@@ -57,8 +57,10 @@ spec:
       workingDir: $(workspaces.workspace.path)
       script: |
         rm -rf git-update-digest-workdir
-        
-        git clone $(params.APP_MANIFESTS_GIT) git-update-digest-workdir
+
+        git clone $(params.MANIFESTS_GIT) git-update-digest-workdir
+
+        git checkout -b $(params.MANIFESTS_GIT_BRANCH)
 
     - name: update-digest
       image: image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/gitops-cli:latest
@@ -83,11 +85,13 @@ spec:
 
         gh auth setup-git
         
-        git commit -am "pr@$(params.GIT_REVISION)"
+        export COMMIT_MSG="pr@$(params.GIT_REVISION)"
+
+        git commit -am $COMMIT_MSG
         
         git status
 
-        git push origin main
+        git push origin $(params.MANIFESTS_GIT_BRANCH)
 
         RESULT_SHA="$(git rev-parse HEAD | tr -d '\n')"
         EXIT_CODE="$?"
@@ -96,8 +100,8 @@ spec:
           exit $EXIT_CODE
         fi
 
-        # create a PR 
-        gh pr create --base main --head "$RESULT_SHA"
+        # create a PR
+        gh pr create --base main --head "$RESULT_SHA" --title $COMMIT_MSG --body $COMMIT_MSG
 
         # Make sure we don't add a trailing newline to the result!
         echo -n "$RESULT_SHA" > $(results.commit.path)
