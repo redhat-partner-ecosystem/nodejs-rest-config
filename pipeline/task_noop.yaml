@@ -9,7 +9,7 @@ spec:
       type: string
   steps:
     - name: msg
-      image: quay.io/openshift/origin-cli:latest
+      image: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/gitops-cli:latest
       script: |
         #!/usr/bin/env bash
 

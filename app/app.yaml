@@ -71,3 +71,25 @@ spec:
     path: pipeline
     repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
     targetRevision: main
+--- 
+kind: Application
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: gitops-tasks
+  namespace: openshift-gitops
+spec:
+  project: default-app-project
+  revisionHistoryLimit: 3
+  syncPolicy:
+    automated:
+      prune: true
+  #    selfHeal: true
+  destination:
+    namespace: nodejs-gitops-pipeline
+    server: https://kubernetes.default.svc
+  source:
+    directory:
+      recurse: true
+    path: gitops-tasks
+    repoURL: https://github.com/redhat-capgemini-exchange/devsecops-config
+    targetRevision: main

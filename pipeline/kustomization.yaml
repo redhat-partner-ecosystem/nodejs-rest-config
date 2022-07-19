@@ -7,8 +7,10 @@ resources:
   - event_listener_service.yaml
   - event_listener_route.yaml
   - image_stream.yaml
-  - tasks.yaml
   - trigger_template.yaml
   - trigger_binding.yaml
   - pipeline.yaml
-  - hack.yaml
+  - build_config.yaml
+  - task_tag_image.yaml
+  - task_noop.yaml
+  - task_git_update_deployment.yaml
