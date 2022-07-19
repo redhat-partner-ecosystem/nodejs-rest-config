@@ -21,8 +21,6 @@ spec:
       name: gitops-cli:latest
       #namespace: openshift
   triggers:
-    - type: ImageChange
-      imageChange: {}
     - type: ConfigChange
 --- 
 kind: ImageStream

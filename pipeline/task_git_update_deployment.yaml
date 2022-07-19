@@ -41,17 +41,17 @@ spec:
         rm -rf git-update-digest-workdir
         git clone $(params.GIT_REPOSITORY) git-update-digest-workdir
 
-    - name: update-digest
-      image: k8s.gcr.io/kustomize/kustomize:v3.8.7
-      workingDir: $(workspaces.workspace.path)
-      script: |
-        cd git-update-digest-workdir/$(params.KUSTOMIZATION_PATH)
-        /app/kustomize edit set image $(params.CURRENT_IMAGE)=$(params.NEW_IMAGE)@$(params.NEW_DIGEST)
-
-        echo "##########################"
-        echo "### kustomization.yaml ###"
-        echo "##########################"
-        cat kustomization.yaml
+    #- name: update-digest
+    #  image: k8s.gcr.io/kustomize/kustomize:v3.8.7
+    #  workingDir: $(workspaces.workspace.path)
+    #  script: |
+    #    cd git-update-digest-workdir/$(params.KUSTOMIZATION_PATH)
+    #    /app/kustomize edit set image $(params.CURRENT_IMAGE)=$(params.NEW_IMAGE)@$(params.NEW_DIGEST)#
+    #
+    #    echo "##########################"
+    #    echo "### kustomization.yaml ###"
+    #    echo "##########################"
+    #    cat kustomization.yaml
 
     - name: git-commit
       image: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/gitops-cli:latest

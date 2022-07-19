@@ -4,11 +4,10 @@ metadata:
   name: pipeline-nodejs-gitops
 spec:
   params:
-    
     - name: APP_NAME
       type: string
       default: "nodejs-gitops"
-    
+
     - name: GIT_REPO
       type: string
       default: "https://github.com/redhat-capgemini-exchange/nodejs-rest.git"
@@ -31,13 +30,15 @@ spec:
 
     - name: IMAGE_STREAM
       type: string
-      #default: >-
-      #  image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops
       default: >-
         image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/nodejs-gitops
     - name: IMAGE_TAG
       type: string
       default: latest
+
+    - name: APP_MANIFESTS_GIT
+      type: string
+      default: "https://github.com/redhat-capgemini-exchange/nodejs-gitops"
 
   workspaces:
     - name: workspace
@@ -64,6 +65,30 @@ spec:
         - name: output
           workspace: workspace
 
+    - name: update-deployment
+      runAfter:
+        - git-clone
+      taskRef:
+        name: git-update-deployment
+      params:
+        - name: GIT_REPOSITORY
+          value: "$(params.APP_MANIFESTS_GIT)"
+        - name: GIT_USERNAME
+          value: gogs
+        - name: GIT_PASSWORD
+          value: gogs
+        - name: CURRENT_IMAGE
+          value: $(params.IMAGE_STREAM)
+        - name: NEW_IMAGE
+          value: $(params.IMAGE_STREAM)
+        - name: NEW_DIGEST
+          value: $(params.GIT_REVISION)
+        - name: KUSTOMIZATION_PATH
+          value: app/dev
+      workspaces:
+        - name: workspace
+          workspace: workspace
+
     #- name: app-test
     #  runAfter:
     #    - git-clone
@@ -73,24 +98,24 @@ spec:
     #    - name: source
     #      workspace: workspace
 
-    - name: build
-      params:
-        - name: IMAGE
-          value: $(params.IMAGE_STREAM)
-        - name: TLSVERIFY
-          value: "false"
-        - name: PATH_CONTEXT
-          value: $(params.PATH_CONTEXT)
-        - name: VERSION
-          value: $(params.BUILDER_VERSION)
-      runAfter:
-        - git-clone
-      taskRef:
-        kind: ClusterTask
-        name: s2i-nodejs
-      workspaces:
-        - name: source
-          workspace: workspace
+    #- name: build
+    #  params:
+    #    - name: IMAGE
+    #      value: $(params.IMAGE_STREAM)
+    #    - name: TLSVERIFY
+    #      value: "false"
+    #    - name: PATH_CONTEXT
+    #      value: $(params.PATH_CONTEXT)
+    #    - name: VERSION
+    #      value: $(params.BUILDER_VERSION)
+    #  runAfter:
+    #    - git-clone
+    #  taskRef:
+    #    kind: ClusterTask
+    #    name: s2i-nodejs
+    #  workspaces:
+    #    - name: source
+    #      workspace: workspace
 
     #- name: tag-build
     #  taskRef:
@@ -106,7 +131,5 @@ spec:
     #      value: $(params.REF)
     #    - name: NAMESPACE
     #      value: $(params.NAMESPACE)
-        #- name: digest
-        #  value: $(tasks.build.results.IMAGE_DIGEST)
-
-  
+    #- name: digest
+    #  value: $(tasks.build.results.IMAGE_DIGEST)

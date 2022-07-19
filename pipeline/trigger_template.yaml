@@ -27,6 +27,8 @@ spec:
             value: "develop"
           - name: GIT_COMMIT
             value: $(tt.params.git-revision)
+          - name: GIT_BRANCH_REF
+            value: $(tt.params.git-branch-ref)
 
           - name: BUILDER_VERSION
             value: "14-ubi8"
@@ -39,8 +41,8 @@ spec:
           - name: IMAGE_TAG
             value: latest
 
-          - name: GIT_BRANCH_REF
-            value: $(tt.params.git-branch-ref)
+          - name: APP_MANIFESTS_GIT
+            default: "https://github.com/redhat-capgemini-exchange/nodejs-gitops"
 
         pipelineRef:
           name: pipeline-nodejs-gitops
