@@ -6,7 +6,6 @@ metadata:
     tekton.dev/tags: git
   name: github-update-deployment
   labels:
-    app.kubernetes.io/version: '0.1'
     operator.tekton.dev/provider-type: community
 spec:
   description: This Task can be used to update image digest in a Git repo using kustomize
@@ -39,9 +38,11 @@ spec:
       image: image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/gitops-cli:latest
       workingDir: $(workspaces.workspace.path)
       script: |
-        echo "-> authenticate against github.com"
-        
-        gh auth login --with-token $GITHUB_TOKEN
+        echo "-> Validating authentication against github.com"
+
+        gh auth status
+
+        gh auth setup-git
 
     - name: git-clone
       image: image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/gitops-cli:latest
