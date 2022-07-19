@@ -8,10 +8,11 @@ spec:
     - name: git-commit-message
     - name: git-repo-url
     - name: git-repo-name
+    - name: git-branch-ref
     - name: content-type
     - name: pusher-name
     - name: pusher-email
-    - name: git-branch-ref
+    
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
@@ -31,9 +32,9 @@ spec:
           - name: GIT_BRANCH_REF
             value: $(tt.params.git-branch-ref)
           - name: GIT_PUSHER_NAME
-            value: $(tt.params.git-pusher-name)
+            value: $(tt.params.pusher-name)
           - name: GIT_PUSHER_EMAIL
-            value: $(tt.params.git-pusher-email)
+            value: $(tt.params.pusher-email)
           - name: GIT_COMMIT_MESSAGE
             value: $(tt.params.git-commit-message)
 
