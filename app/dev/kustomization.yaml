@@ -1,5 +1,1 @@
-resources:
-  - namespaces.yaml
-  - rolebindings.yaml
-  - app.yaml
-  - db.yaml
+resources:\n\timage-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops1658263203
