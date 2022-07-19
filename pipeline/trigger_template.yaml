@@ -50,9 +50,9 @@ spec:
             value: latest
 
           - name: MANIFESTS_GIT
-            default: "https://github.com/redhat-capgemini-exchange/nodejs-gitops"
+            value: "https://github.com/redhat-capgemini-exchange/nodejs-gitops"
           - name: MANIFESTS_GIT_BRANCH
-            default: develop
+            value: develop
 
         pipelineRef:
           name: pipeline-nodejs-gitops
