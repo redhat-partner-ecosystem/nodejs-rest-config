@@ -10,6 +10,7 @@ spec:
     - name: git-repo-name
     - name: content-type
     - name: pusher-name
+    - name: pusher-email
     - name: git-branch-ref
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
@@ -29,6 +30,12 @@ spec:
             value: $(tt.params.git-revision)
           - name: GIT_BRANCH_REF
             value: $(tt.params.git-branch-ref)
+          - name: GIT_PUSHER_NAME
+            value: $(tt.params.git-pusher-name)
+          - name: GIT_PUSHER_EMAIL
+            value: $(tt.params.git-pusher-email)
+          - name: GIT_COMMIT_MESSAGE
+            value: $(tt.params.git-commit-message)
 
           - name: BUILDER_VERSION
             value: "14-ubi8"

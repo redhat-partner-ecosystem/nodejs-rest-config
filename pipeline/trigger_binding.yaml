@@ -16,5 +16,7 @@ spec:
       value: $(header.Content-Type)
     - name: pusher-name
       value: $(body.pusher.name)
+    - name: pusher-email
+      value: $(body.pusher.email)
     - name: git-branch-ref
       value: $(body.ref)
