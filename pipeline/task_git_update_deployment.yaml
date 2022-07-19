@@ -35,14 +35,14 @@ spec:
 
   steps:
     - name: git-clone
-      image: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/gitops-cli:latest
+      image: image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/gitops-cli:latest
       workingDir: $(workspaces.workspace.path)
       script: |
         rm -rf git-update-digest-workdir
         git clone $(params.GIT_REPOSITORY) git-update-digest-workdir
 
     - name: update-digest
-      image: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/gitops-cli:latest
+      image: image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/gitops-cli:latest
       workingDir: $(workspaces.workspace.path)
       script: |
         cd git-update-digest-workdir/$(params.KUSTOMIZATION_PATH)
@@ -53,7 +53,7 @@ spec:
         cat kustomization.yaml
 
     - name: git-commit
-      image: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/gitops-cli:latest
+      image: image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/gitops-cli:latest
       workingDir: $(workspaces.workspace.path)
       script: |
         cd git-update-digest-workdir
