@@ -4,41 +4,43 @@ metadata:
   name: pipeline-nodejs-gitops
 spec:
   params:
-    - default: "nodejs-gitops"
-      name: APP_NAME
+    
+    - name: APP_NAME
       type: string
-    - default: "https://github.com/redhat-capgemini-exchange/nodejs-rest.git"
-      name: GIT_REPO
+      default: "nodejs-gitops"
+    - name: NAMESPACE
       type: string
-    - default: develop
-      name: GIT_REVISION
-      type: string
-    - default: ""
-      name: GIT_COMMIT
-      type: string
-    - default: "."
-      name: PATH_CONTEXT
-      type: string
-    - default: "14-ubi8"
-      name: VERSION
-      type: string
-    - default: >-
-        image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops
-      name: IMAGE_STREAM
-      type: string
-    - default: "nodejs-gitops"
-      name: IMAGE_NAME
-      type: string
-    - default: latest
-      name: IMAGE_TAG
-      type: string
-    - default: nodejs-gitops-pipeline
-      name: NAMESPACE
-      type: string
-    - default: foo/bar/develop
-      name: REF
-      type: string
+      default: nodejs-gitops-pipeline
 
+    - name: GIT_REPO
+      type: string
+      default: "https://github.com/redhat-capgemini-exchange/nodejs-rest.git"
+    - name: GIT_REVISION
+      type: string
+      default: develop
+    - name: GIT_COMMIT
+      type: string
+      default: ""
+
+    - name: BUILDER_VERSION
+      type: string
+      default: "14-ubi8"
+    - name: PATH_CONTEXT
+      type: string
+      default: "."
+
+    - name: IMAGE_STREAM
+      type: string
+      default: >-
+        image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops  
+    - name: IMAGE_TAG
+      type: string
+      default: latest
+
+    - name: REF
+      type: string
+      default: foo/bar/develop
+      
   tasks:
     - name: git-clone
       params:
@@ -79,7 +81,7 @@ spec:
         - name: PATH_CONTEXT
           value: $(params.PATH_CONTEXT)
         - name: VERSION
-          value: $(params.VERSION)
+          value: $(params.BUILDER_VERSION)
       runAfter:
         - git-clone
       taskRef:
@@ -89,21 +91,20 @@ spec:
         - name: source
           workspace: workspace
 
-    - name: tag-build
-      taskRef:
-        name: tag-image
-      runAfter:
-        - build
-      params:
-        - name: commit
-          value: $(params.GIT_COMMIT)
-        #  value: $(tasks.git-clone.results.commit)
-        - name: IMAGE_NAME
-          value: $(params.IMAGE_NAME)
-        - name: REF
-          value: $(params.REF)
-        - name: NAMESPACE
-          value: $(params.NAMESPACE)
+    #- name: tag-build
+    #  taskRef:
+    #    name: tag-image
+    #  runAfter:
+    #    - build
+    #  params:
+    #    - name: commit
+    #      value: $(params.GIT_COMMIT)
+    #    - name: IMAGE_NAME
+    #      value: $(params.APP_NAME)
+    #    - name: REF
+    #      value: $(params.REF)
+    #    - name: NAMESPACE
+    #      value: $(params.NAMESPACE)
         #- name: digest
         #  value: $(tasks.build.results.IMAGE_DIGEST)
 

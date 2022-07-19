@@ -58,10 +58,10 @@ metadata:
 spec:
   project: default-app-project
   revisionHistoryLimit: 3
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+  #syncPolicy:
+  #  automated:
+  #    prune: true
+  #    selfHeal: true
   destination:
     namespace: nodejs-gitops-pipeline
     server: https://kubernetes.default.svc

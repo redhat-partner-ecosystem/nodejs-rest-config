@@ -20,26 +20,27 @@ spec:
         params:
           - name: APP_NAME
             value: nodejs-gitops
+          - name: NAMESPACE
+            value: nodejs-gitops-pipeline
+
           - name: GIT_REPO
-            value: >-
-              https://github.com/redhat-capgemini-exchange/nodejs-rest.git
+            value: "https://github.com/redhat-capgemini-exchange/nodejs-rest.git"
           - name: GIT_REVISION
             value: "develop"
           - name: GIT_COMMIT
             value: $(tt.params.git-revision)
+
+          - name: BUILDER_VERSION
+            value: "14-ubi8"
           - name: PATH_CONTEXT
-            value: .
-          - name: VERSION
-            value: 16-ubi8
+            value: "."
+
           - name: IMAGE_STREAM
             value: >-
               image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops
-          - name: IMAGE_NAME
-            value: nodejs-gitops
           - name: IMAGE_TAG
             value: latest
-          - name: NAMESPACE
-            value: nodejs-gitops-pipeline
+
           - name: REF
             value: $(tt.params.ref)
 
@@ -51,15 +52,3 @@ spec:
           - name: workspace
             persistentVolumeClaim:
               claimName: nodejs-build-workspace
-
-          #- name: workspace
-          #  volumeClaimTemplate:
-          #    metadata:
-          #      labels:
-          #        tekton.dev/pipeline: pipeline-nodejs-gitops
-          #    spec:
-          #      accessModes:
-          #        - ReadWriteOnce
-          #      resources:
-          #        requests:
-          #          storage: 1Gi
