@@ -78,6 +78,8 @@ spec:
 
         git checkout -b $(params.MANIFESTS_GIT_BRANCH)
 
+        git pull origin $(params.MANIFESTS_GIT_BRANCH)
+
         # create a patch 
         echo "-> patching kustomization.yaml"
 
@@ -100,7 +102,7 @@ spec:
         fi
 
         # create a PR
-        
+
         PR=`gh pr view $(params.MANIFESTS_GIT_BRANCH)`
 
         if [ $PR == "" ]; then
