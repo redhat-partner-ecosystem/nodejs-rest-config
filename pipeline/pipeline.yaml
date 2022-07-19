@@ -38,7 +38,10 @@ spec:
     - name: IMAGE_TAG
       type: string
       default: latest
-      
+
+  workspaces:
+    - name: workspace
+
   tasks:
     - name: git-clone
       params:
@@ -106,5 +109,4 @@ spec:
         #- name: digest
         #  value: $(tasks.build.results.IMAGE_DIGEST)
 
-  workspaces:
-    - name: workspace
+  
