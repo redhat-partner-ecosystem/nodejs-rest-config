@@ -94,5 +94,9 @@ spec:
         then
           exit $EXIT_CODE
         fi
+
+        # create a PR 
+        gh pr create --base main --head "$RESULT_SHA"
+
         # Make sure we don't add a trailing newline to the result!
         echo -n "$RESULT_SHA" > $(results.commit.path)
