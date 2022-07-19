@@ -82,6 +82,10 @@ spec:
 
         git pull origin $(params.MANIFESTS_GIT_BRANCH)
 
+        PR="pr-$(git rev-parse HEAD | tr -d '\n')"
+
+        git checkout -b $PR
+
         # create a patch 
         echo "-> patching kustomization.yaml"
 
@@ -90,11 +94,13 @@ spec:
         # commit and push
         echo "-> push to branch $(params.MANIFESTS_GIT_BRANCH)"
         
-        export COMMIT_MSG="$(params.MANIFESTS_GIT_BRANCH)@$(params.GIT_REVISION)"
+        export COMMIT_MSG="$PR@$(params.MANIFESTS_GIT_BRANCH)"
+
+        export COMMIT_BODY="$COMMIT_MSG \n\n $(params.GIT_COMMIT_MESSAGE) \n\n $(params.GIT_PUSHER_NAME) - $(params.GIT_PUSHER_EMAIL)"
 
         git commit -am "$COMMIT_MSG"
         
-        git push origin $(params.MANIFESTS_GIT_BRANCH)
+        git push origin $PR
 
         RESULT_SHA="$(git rev-parse HEAD | tr -d '\n')"
         EXIT_CODE="$?"
@@ -107,7 +113,7 @@ spec:
 
         #PR=`gh pr view $(params.MANIFESTS_GIT_BRANCH)`
         
-        gh pr create --base $(params.MANIFESTS_GIT_BRANCH) --head --title $COMMIT_MSG --body $COMMIT_MSG
+        gh pr create --base $(params.MANIFESTS_GIT_BRANCH) --head $PR --title "$COMMIT_MSG" --body "$COMMIT_BODY"
 
         # Make sure we don't add a trailing newline to the result!
         echo -n "$RESULT_SHA" > $(results.commit.path)
