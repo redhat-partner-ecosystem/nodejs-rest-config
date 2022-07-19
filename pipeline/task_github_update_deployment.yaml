@@ -35,6 +35,14 @@ spec:
           name: github-secrets
 
   steps:
+    - name: setup-github
+      image: image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/gitops-cli:latest
+      workingDir: $(workspaces.workspace.path)
+      script: |
+        echo "-> authenticate against github.com"
+        
+        gh auth login --with-token $GITHUB_TOKEN
+
     - name: git-clone
       image: image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/gitops-cli:latest
       workingDir: $(workspaces.workspace.path)
