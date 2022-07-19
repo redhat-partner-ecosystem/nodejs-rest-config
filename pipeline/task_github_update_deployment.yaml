@@ -81,7 +81,7 @@ spec:
         # create a patch 
         echo "-> patching kustomization.yaml"
 
-        echo "resources:\n\t$(params.NEW_IMAGE)" > $(params.KUSTOMIZATION_PATH)/kustomization.yaml
+        echo "resources:\n\t$(params.NEW_IMAGE)$(date +%s)" > $(params.KUSTOMIZATION_PATH)/kustomization.yaml
 
         # commit and push
         echo "-> push to branch $(params.MANIFESTS_GIT_BRANCH)"
@@ -102,7 +102,7 @@ spec:
         # create a PR
         echo "-> create a PR"
 
-        gh pr create --base main --head "$RESULT_SHA" --title $COMMIT_MSG --body $COMMIT_MSG
+        gh pr create --base main --head $(params.MANIFESTS_GIT_BRANCH) --title $COMMIT_MSG --body $COMMIT_MSG
 
         # Make sure we don't add a trailing newline to the result!
         echo -n "$RESULT_SHA" > $(results.commit.path)
