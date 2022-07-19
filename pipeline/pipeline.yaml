@@ -31,7 +31,7 @@ spec:
     - name: IMAGE_STREAM
       type: string
       default: >-
-        image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/nodejs-gitops
+        image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops
     - name: IMAGE_TAG
       type: string
       default: latest
