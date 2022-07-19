@@ -58,8 +58,6 @@ spec:
       image: image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/gitops-cli:latest
       workingDir: $(workspaces.workspace.path)
       script: |
-        cd git-update-digest-workdir
-
         # setup git and gh
         echo "-> setup git and gh"
 
@@ -71,6 +69,9 @@ spec:
 
         # clone the repo
         echo "-> cloning $(params.MANIFESTS_GIT)"
+
+        rm -rf git-update-digest-workdir
+
         git clone $(params.MANIFESTS_GIT) git-update-digest-workdir
 
         git checkout -b $(params.MANIFESTS_GIT_BRANCH)
@@ -78,9 +79,9 @@ spec:
         # create a patch 
         echo "-> patching kustomization.yaml"
 
-        cd $(params.KUSTOMIZATION_PATH)
+        cd git-update-digest-workdir
 
-        echo "resources:\n\t$(params.NEW_IMAGE)" > kustomization.yaml
+        echo "resources:\n\t$(params.NEW_IMAGE)" > $(params.KUSTOMIZATION_PATH)/kustomization.yaml
 
         git status
 
