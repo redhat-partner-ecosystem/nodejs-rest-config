@@ -1,1 +1,1 @@
-resources:\n\timage-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops
+resources:\n\timage-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops1658261630
