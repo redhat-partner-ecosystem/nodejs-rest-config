@@ -14,9 +14,6 @@ spec:
     - name: GIT_REVISION
       type: string
       default: develop
-    - name: GIT_COMMIT
-      type: string
-      default: ""
     - name: GIT_BRANCH_REF
       type: string
       default: "foo/bar/develop"
@@ -48,10 +45,7 @@ spec:
     - name: MANIFESTS_GIT
       type: string
       default: "https://github.com/redhat-capgemini-exchange/nodejs-gitops"
-    - name: MANIFESTS_GIT_BRANCH
-      type: string
-      default: main
-
+    
   workspaces:
     - name: workspace
 
@@ -85,11 +79,11 @@ spec:
       params:
         - name: MANIFESTS_GIT
           value: "$(params.MANIFESTS_GIT)"
-        - name: MANIFESTS_GIT_BRANCH
-          value: "$(params.MANIFESTS_GIT_BRANCH)"
 
         - name: GIT_REVISION
-          value: $(params.GIT_COMMIT)
+          value: $(params.GIT_REVISION)
+        - name: GIT_BRANCH_REF
+          value: $(params.GIT_BRANCH_REF)
         - name: GIT_PUSHER_NAME
           value: $(params.GIT_PUSHER_NAME)
         - name: GIT_PUSHER_EMAIL

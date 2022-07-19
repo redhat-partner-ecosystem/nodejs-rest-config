@@ -26,8 +26,6 @@ spec:
           - name: GIT_REPO
             value: "https://github.com/redhat-capgemini-exchange/nodejs-rest.git"
           - name: GIT_REVISION
-            value: "develop"
-          - name: GIT_COMMIT
             value: $(tt.params.git-revision)
           - name: GIT_BRANCH_REF
             value: $(tt.params.git-branch-ref)
@@ -51,9 +49,7 @@ spec:
 
           - name: MANIFESTS_GIT
             value: "https://github.com/redhat-capgemini-exchange/nodejs-gitops"
-          - name: MANIFESTS_GIT_BRANCH
-            value: develop
-
+          
         pipelineRef:
           name: pipeline-nodejs-gitops
 
