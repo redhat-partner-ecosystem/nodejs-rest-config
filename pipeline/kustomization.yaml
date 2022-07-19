@@ -11,3 +11,4 @@ resources:
   - trigger_template.yaml
   - trigger_binding.yaml
   - pipeline.yaml
+  - hack.yaml
