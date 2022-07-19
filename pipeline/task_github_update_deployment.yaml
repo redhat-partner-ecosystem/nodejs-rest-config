@@ -58,7 +58,7 @@ spec:
       image: image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/gitops-cli:latest
       workingDir: $(workspaces.workspace.path)
       script: |
-        cd git-update-digest-workdir/$(params.KUSTOMIZATION_PATH)
+        cd git-update-digest-workdir
 
         # setup git and gh
         echo "-> setup git and gh"
@@ -77,6 +77,8 @@ spec:
 
         # create a patch 
         echo "-> patching kustomization.yaml"
+
+        cd $(params.KUSTOMIZATION_PATH)
 
         echo "resources:\n\t$(params.NEW_IMAGE)" > kustomization.yaml
 
