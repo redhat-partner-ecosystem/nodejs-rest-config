@@ -83,8 +83,10 @@ spec:
       taskRef:
         name: github-update-deployment
       params:
-        - name: APP_MANIFESTS_GIT
-          value: "$(params.APP_MANIFESTS_GIT)"
+        - name: MANIFESTS_GIT
+          value: "$(params.MANIFESTS_GIT)"
+        - name: MANIFESTS_GIT_BRANCH
+          value: "$(params.MANIFESTS_GIT_BRANCH)"
 
         - name: GIT_REVISION
           value: $(params.GIT_REVISION)

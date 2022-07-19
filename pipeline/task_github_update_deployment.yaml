@@ -10,7 +10,9 @@ metadata:
 spec:
   description: This task can be used to update image digest in a Git repo using kustomize
   params:
-    - name: APP_MANIFESTS_GIT
+    - name: MANIFESTS_GIT
+      type: string
+    - name: MANIFESTS_GIT_BRANCH
       type: string
 
     - name: GIT_REVISION
