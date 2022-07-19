@@ -100,9 +100,17 @@ spec:
         fi
 
         # create a PR
-        echo "-> create a PR"
+        
+        PR=`gh pr view $(params.MANIFESTS_GIT_BRANCH)`
 
-        gh pr create --base main --head $(params.MANIFESTS_GIT_BRANCH) --title $COMMIT_MSG --body $COMMIT_MSG
+        if [ $PR == "" ]; then
+          echo "-> create a PR"
+
+          gh pr create --base main --head $(params.MANIFESTS_GIT_BRANCH) --title $COMMIT_MSG --body $COMMIT_MSG
+        else
+          echo "-> already some PRs"
+          echo "$PR"
+        fi
 
         # Make sure we don't add a trailing newline to the result!
         echo -n "$RESULT_SHA" > $(results.commit.path)
