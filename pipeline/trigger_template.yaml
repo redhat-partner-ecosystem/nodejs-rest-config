@@ -52,7 +52,7 @@ spec:
           - name: MANIFESTS_GIT
             default: "https://github.com/redhat-capgemini-exchange/nodejs-gitops"
           - name: MANIFESTS_GIT_BRANCH
-            default: main
+            default: develop
 
         pipelineRef:
           name: pipeline-nodejs-gitops
