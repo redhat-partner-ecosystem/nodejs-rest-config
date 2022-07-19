@@ -57,6 +57,7 @@ spec:
       workingDir: $(workspaces.workspace.path)
       script: |
         rm -rf git-update-digest-workdir
+        
         git clone $(params.APP_MANIFESTS_GIT) git-update-digest-workdir
 
     - name: update-digest
