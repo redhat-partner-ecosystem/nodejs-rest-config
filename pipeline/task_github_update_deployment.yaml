@@ -74,16 +74,14 @@ spec:
 
         git clone $(params.MANIFESTS_GIT) git-update-digest-workdir
 
+        cd git-update-digest-workdir
+
         git checkout -b $(params.MANIFESTS_GIT_BRANCH)
 
         # create a patch 
         echo "-> patching kustomization.yaml"
 
-        cd git-update-digest-workdir
-
         echo "resources:\n\t$(params.NEW_IMAGE)" > $(params.KUSTOMIZATION_PATH)/kustomization.yaml
-
-        git status
 
         # commit and push
         echo "-> push to branch $(params.MANIFESTS_GIT_BRANCH)"
@@ -92,8 +90,6 @@ spec:
 
         git commit -am $COMMIT_MSG
         
-        git status
-
         git push origin $(params.MANIFESTS_GIT_BRANCH)
 
         RESULT_SHA="$(git rev-parse HEAD | tr -d '\n')"
