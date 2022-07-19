@@ -12,5 +12,4 @@ resources:
   - pipeline.yaml
   - build_config.yaml
   - task_tag_image.yaml
-  - task_noop.yaml
   - task_git_update_deployment.yaml
