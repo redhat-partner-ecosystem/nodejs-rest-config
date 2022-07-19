@@ -69,14 +69,10 @@ spec:
       runAfter:
         - git-clone
       taskRef:
-        name: git-update-deployment
+        name: github-update-deployment
       params:
         - name: GIT_REPOSITORY
           value: "$(params.APP_MANIFESTS_GIT)"
-        - name: GIT_USERNAME
-          value: gogs
-        - name: GIT_PASSWORD
-          value: gogs
         - name: CURRENT_IMAGE
           value: $(params.IMAGE_STREAM)
         - name: NEW_IMAGE

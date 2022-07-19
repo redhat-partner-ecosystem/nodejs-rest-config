@@ -4,7 +4,7 @@ metadata:
   annotations:
     tekton.dev/pipelines.minVersion: 0.12.1
     tekton.dev/tags: git
-  name: git-update-deployment
+  name: github-update-deployment
   labels:
     app.kubernetes.io/version: '0.1'
     operator.tekton.dev/provider-type: community
@@ -12,10 +12,6 @@ spec:
   description: This Task can be used to update image digest in a Git repo using kustomize
   params:
     - name: GIT_REPOSITORY
-      type: string
-    - name: GIT_USERNAME
-      type: string
-    - name: GIT_PASSWORD
       type: string
     - name: CURRENT_IMAGE
       type: string
@@ -32,6 +28,11 @@ spec:
   results:
     - name: commit
       description: The commit SHA
+
+  stepTemplate:
+    envFrom:
+      - secretRef:
+          name: github-secrets
 
   steps:
     - name: git-clone
@@ -58,15 +59,16 @@ spec:
       script: |
         cd git-update-digest-workdir
         git config user.email "tekton-pipelines-ci@redhat.com"
-        git config user.name "tekton-pipelines-ci"
+        git config user.name "$GITHUB_USER"
 
-        git status
         git add $(params.KUSTOMIZATION_PATH)/kustomization.yaml
         # git commit -m "[$(context.pipelineRun.name)] Image digest updated"
-        git commit -am "[ci] Image digest updated"
+        git commit -am "image digest updated"
+        
+        git status
 
-        git remote add auth-origin $(echo $(params.GIT_REPOSITORY) | sed -E "s#http://(.*)#http://$(params.GIT_USERNAME):$(params.GIT_PASSWORD)@\1#g")
-        git push auth-origin master
+        git remote add auth-origin $(echo $(params.GIT_REPOSITORY) | sed -E "s#http://(.*)#http://$GITHUB_USER:$GITHUB_PASSWORD@\1#g")
+        git push auth-origin main
 
         RESULT_SHA="$(git rev-parse HEAD | tr -d '\n')"
         EXIT_CODE="$?"
