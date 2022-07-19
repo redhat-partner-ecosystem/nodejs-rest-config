@@ -82,7 +82,8 @@ spec:
 
         git pull origin $(params.MANIFESTS_GIT_BRANCH)
 
-        PR="pr-$(git rev-parse HEAD | tr -d '\n')"
+        #PR="pr-$(git rev-parse HEAD | tr -d '\n')"
+        PR="pr-$(params.GIT_REVISION)"
 
         git checkout -b $PR
 

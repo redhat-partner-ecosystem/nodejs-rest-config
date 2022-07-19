@@ -89,7 +89,7 @@ spec:
           value: "$(params.MANIFESTS_GIT_BRANCH)"
 
         - name: GIT_REVISION
-          value: $(params.GIT_REVISION)
+          value: $(params.GIT_COMMIT)
         - name: GIT_PUSHER_NAME
           value: $(params.GIT_PUSHER_NAME)
         - name: GIT_PUSHER_EMAIL
