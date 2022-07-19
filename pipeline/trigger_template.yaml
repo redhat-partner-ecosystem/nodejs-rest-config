@@ -10,7 +10,7 @@ spec:
     - name: git-repo-name
     - name: content-type
     - name: pusher-name
-    - name: ref
+    - name: git-branch-ref
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
@@ -20,9 +20,7 @@ spec:
         params:
           - name: APP_NAME
             value: nodejs-gitops
-          - name: NAMESPACE
-            value: nodejs-gitops-pipeline
-
+          
           - name: GIT_REPO
             value: "https://github.com/redhat-capgemini-exchange/nodejs-rest.git"
           - name: GIT_REVISION
@@ -37,12 +35,12 @@ spec:
 
           - name: IMAGE_STREAM
             value: >-
-              image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops
+              image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/nodejs-gitops
           - name: IMAGE_TAG
             value: latest
 
-          - name: REF
-            value: $(tt.params.ref)
+          - name: GIT_BRANCH_REF
+            value: $(tt.params.git-branch-ref)
 
         pipelineRef:
           name: pipeline-nodejs-gitops

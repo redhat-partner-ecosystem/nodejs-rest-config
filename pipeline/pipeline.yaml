@@ -8,10 +8,7 @@ spec:
     - name: APP_NAME
       type: string
       default: "nodejs-gitops"
-    - name: NAMESPACE
-      type: string
-      default: nodejs-gitops-pipeline
-
+    
     - name: GIT_REPO
       type: string
       default: "https://github.com/redhat-capgemini-exchange/nodejs-rest.git"
@@ -21,6 +18,9 @@ spec:
     - name: GIT_COMMIT
       type: string
       default: ""
+    - name: GIT_BRANCH_REF
+      type: string
+      default: "foo/bar/develop"
 
     - name: BUILDER_VERSION
       type: string
@@ -31,15 +31,13 @@ spec:
 
     - name: IMAGE_STREAM
       type: string
+      #default: >-
+      #  image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops
       default: >-
-        image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops  
+        image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/nodejs-gitops
     - name: IMAGE_TAG
       type: string
       default: latest
-
-    - name: REF
-      type: string
-      default: foo/bar/develop
       
   tasks:
     - name: git-clone
