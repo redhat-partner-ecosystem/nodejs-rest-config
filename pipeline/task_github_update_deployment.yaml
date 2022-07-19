@@ -102,7 +102,7 @@ spec:
 
         # create a PR
         echo "-> create a PR"
-        
+
         gh pr create --base main --head "$RESULT_SHA" --title $COMMIT_MSG --body $COMMIT_MSG
 
         # Make sure we don't add a trailing newline to the result!
