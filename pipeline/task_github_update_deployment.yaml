@@ -82,13 +82,10 @@ spec:
       script: |
         cd git-update-digest-workdir
         
-        # git add $(params.KUSTOMIZATION_PATH)/kustomization.yaml
-        # git commit -m "[$(context.pipelineRun.name)] Image digest updated"
         git commit -am "$(context.pipelineRun.name)@$(params.GIT_REVISION)"
         
         git status
 
-        #git remote add auth-origin $(echo $(params.GIT_REPOSITORY) | sed -E "s#http://(.*)#http://$GITHUB_USER:$GITHUB_PASSWORD@\1#g")
         git push origin main
 
         RESULT_SHA="$(git rev-parse HEAD | tr -d '\n')"
