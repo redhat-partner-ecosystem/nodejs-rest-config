@@ -1,11 +1,11 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: el-nodejs-gitops
+  name: el-build-pipeline
   labels:
     app.kubernetes.io/managed-by: EventListener
     app.kubernetes.io/part-of: Triggers
-    eventlistener: event-listener-nodejs-gitops
+    eventlistener: event-listener-build-pipeline
 spec:
   ipFamilies:
     - IPv4
@@ -25,4 +25,4 @@ spec:
   selector:
     app.kubernetes.io/managed-by: EventListener
     app.kubernetes.io/part-of: Triggers
-    eventlistener: event-listener-nodejs-gitops
+    eventlistener: event-listener-build-pipeline

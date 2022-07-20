@@ -1,12 +1,19 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: pipeline-nodejs-gitops
+  name: build-pipeline
 spec:
   params:
     - name: APP_NAME
       type: string
       default: "nodejs-gitops"
+    - name: NAMESPACE
+      type: string
+      default: "nodejs-gitops-pipeline"
+
+    - name: MANIFESTS_GIT
+      type: string
+      default: "https://github.com/redhat-capgemini-exchange/nodejs-gitops"
 
     - name: GIT_REPO
       type: string
@@ -27,24 +34,16 @@ spec:
       type: string
       default: "commit"
 
+    - name: IMAGE_STREAM
+      type: string
+      default: >-
+        image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops
     - name: BUILDER_VERSION
       type: string
       default: "14-ubi8"
     - name: PATH_CONTEXT
       type: string
-      default: "."
-
-    - name: IMAGE_STREAM
-      type: string
-      default: >-
-        image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops
-    - name: IMAGE_TAG
-      type: string
-      default: latest
-
-    - name: MANIFESTS_GIT
-      type: string
-      default: "https://github.com/redhat-capgemini-exchange/nodejs-gitops"
+      default: "."  
 
   workspaces:
     - name: workspace
@@ -91,10 +90,29 @@ spec:
         - name: source
           workspace: workspace
 
+    - name: tag-image-stream
+      taskRef:
+        kind: ClusterTask
+        name: tag-image-stream
+      runAfter:
+        - build
+      params:
+        - name: GIT_REVISION
+          value: $(params.GIT_REVISION)
+        - name: GIT_BRANCH_REF
+          value: $(params.GIT_BRANCH_REF)
+        - name: IMAGE_DIGEST
+          value: $(tasks.build.results.IMAGE_DIGEST)
+        - name: IMAGE_NAME
+          value: $(params.APP_NAME)
+        - name: NAMESPACE
+          value: $(params.NAMESPACE)
+
     - name: update-manifest
       runAfter:
         - build
       taskRef:
+        kind: ClusterTask
         name: github-update-manifest
       params:
         - name: MANIFESTS_GIT
@@ -113,10 +131,6 @@ spec:
           value: $(tasks.build.results.IMAGE_DIGEST)
 
         # remove
-        - name: CURRENT_IMAGE
-          value: $(params.IMAGE_STREAM)
-        - name: NEW_IMAGE
-          value: $(params.IMAGE_STREAM)
         - name: KUSTOMIZATION_PATH
           value: app/dev
 
@@ -124,28 +138,13 @@ spec:
         - name: manifest
           workspace: audit
 
-    #- name: app-test
-    #  runAfter:
-    #    - git-clone
-    #  taskRef:
-    #    name: npm-test
-    #  workspaces:
-    #    - name: source
-    #      workspace: workspace
-
-    #- name: tag-build
-    #  taskRef:
-    #    name: tag-image
-    #  runAfter:
-    #    - build
-    #  params:
-    #    - name: commit
-    #      value: $(params.GIT_COMMIT)
-    #    - name: IMAGE_NAME
-    #      value: $(params.APP_NAME)
-    #    - name: REF
-    #      value: $(params.REF)
-    #    - name: NAMESPACE
-    #      value: $(params.NAMESPACE)
-    #- name: digest
-    #  value: $(tasks.build.results.IMAGE_DIGEST)
+    - name: rollout
+      params:
+        - name: SCRIPT
+          value: oc rollout latest dc/$(params.APP_NAME) -n "$(params.APP_NAME)-dev"
+      runAfter:
+        - tag-image-stream
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client
+        
