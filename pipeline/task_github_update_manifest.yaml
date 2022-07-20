@@ -112,7 +112,7 @@ spec:
         PR="pr-${REVISION:0:7}@$BRANCH"
 
         # append to AUDIT.md
-        AUDIT_MSG="$(date +%s): $PR $(params.GIT_PUSHER_NAME)/$(params.GIT_PUSHER_EMAIL)   \nDigest: $(params.IMAGE_DIGEST)  \n$(params.GIT_COMMIT_MESSAGE)   \n\n"
+        AUDIT_MSG="$(date +%s): $PR $(params.GIT_PUSHER_NAME)/$(params.GIT_PUSHER_EMAIL)   \n$(params.IMAGE_DIGEST)  \n'$(params.GIT_COMMIT_MESSAGE)'   \n\n"
 
         echo "-> $AUDIT_MSG"
         echo -e $AUDIT_MSG >> AUDIT.md
@@ -148,7 +148,7 @@ spec:
         echo "-> pushing to branch $PR"
 
         COMMIT_MSG="$PR"
-        AUDIT_MSG="$(date +%s): $PR $(params.GIT_PUSHER_NAME)/$(params.GIT_PUSHER_EMAIL)   \nDigest: $(params.IMAGE_DIGEST)  \n$(params.GIT_COMMIT_MESSAGE)   \n\n"
+        AUDIT_MSG="$(date +%s): $PR $(params.GIT_PUSHER_NAME)/$(params.GIT_PUSHER_EMAIL)  $(params.IMAGE_DIGEST)  $(params.GIT_COMMIT_MESSAGE)"
 
         git status
 
