@@ -58,3 +58,6 @@ spec:
           - name: workspace
             persistentVolumeClaim:
               claimName: nodejs-build-workspace
+          - name: audit
+            persistentVolumeClaim:
+              claimName: nodejs-audit-workspace
