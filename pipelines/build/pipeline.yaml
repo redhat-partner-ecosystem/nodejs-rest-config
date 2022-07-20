@@ -92,6 +92,7 @@ spec:
 
     - name: tag-image-stream
       taskRef:
+        kind: ClusterTask
         name: tag-image-stream
       runAfter:
         - build
@@ -111,6 +112,7 @@ spec:
       runAfter:
         - build
       taskRef:
+        kind: ClusterTask
         name: github-update-manifest
       params:
         - name: MANIFESTS_GIT
@@ -129,10 +131,6 @@ spec:
           value: $(tasks.build.results.IMAGE_DIGEST)
 
         # remove
-        - name: CURRENT_IMAGE
-          value: $(params.IMAGE_STREAM)
-        - name: NEW_IMAGE
-          value: $(params.IMAGE_STREAM)
         - name: KUSTOMIZATION_PATH
           value: app/dev
 
