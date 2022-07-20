@@ -48,6 +48,7 @@ spec:
     
   workspaces:
     - name: workspace
+    - name: audit
 
   tasks:
     - name: git-clone
@@ -102,7 +103,7 @@ spec:
 
       workspaces:
         - name: manifest
-          workspace: workspace
+          workspace: audit
 
     #- name: app-test
     #  runAfter:

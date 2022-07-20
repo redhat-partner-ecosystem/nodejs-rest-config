@@ -45,7 +45,7 @@ spec:
   steps:
     - name: validate-github
       image: image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/gitops-cli:latest
-      workingDir: $(workspaces.source.path)
+      workingDir: $(workspaces.manifest.path)
       script: |
         echo "-> Validating authentication against github.com"
 
@@ -61,7 +61,7 @@ spec:
 
     - name: git-clone
       image: image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/gitops-cli:latest
-      workingDir: $(workspaces.source.path)
+      workingDir: $(workspaces.manifest.path)
       
       script: |
         # clone the repo
