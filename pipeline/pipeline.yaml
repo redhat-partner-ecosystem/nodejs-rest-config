@@ -72,11 +72,11 @@ spec:
         - name: output
           workspace: workspace
 
-    - name: update-deployment
+    - name: update-manifest
       runAfter:
         - git-clone
       taskRef:
-        name: github-update-deployment
+        name: github-update-manifest
       params:
         - name: MANIFESTS_GIT
           value: "$(params.MANIFESTS_GIT)"

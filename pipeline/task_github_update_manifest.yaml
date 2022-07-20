@@ -4,7 +4,7 @@ metadata:
   annotations:
     tekton.dev/pipelines.minVersion: 0.12.1
     tekton.dev/tags: git
-  name: github-update-deployment
+  name: github-update-manifest
   labels:
     operator.tekton.dev/provider-type: community
 spec:
@@ -112,7 +112,7 @@ spec:
         PR="pr-${REVISION:0:7}@$BRANCH"
 
         # append to AUDIT.md
-        AUDIT_MSG="$(date +%s): $PR"
+        AUDIT_MSG="$(date +%s): $PR $(params.GIT_PUSHER_NAME)/$(params.GIT_PUSHER_EMAIL) \n $(params.GIT_COMMIT_MESSAGE) \n---\n\n"
 
         echo "-> $AUDIT_MSG"
         echo $AUDIT_MSG >> AUDIT.md
