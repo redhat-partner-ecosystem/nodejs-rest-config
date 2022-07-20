@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: pipeline-nodejs-gitops
+  name: nodejs-gitops-build-pipeline
 spec:
   params:
     - name: APP_NAME
