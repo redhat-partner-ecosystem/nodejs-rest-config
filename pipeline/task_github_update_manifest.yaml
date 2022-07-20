@@ -2,17 +2,17 @@ apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   annotations:
-    tekton.dev/pipelines.minVersion: 0.12.1
-    tekton.dev/tags: git
+    tekton.dev/displayName: github update manifest
+    tekton.dev/pipelines.minVersion: '0.19'
+    tekton.dev/tags: 'git, pull-request'
   name: github-update-manifest
   labels:
     operator.tekton.dev/provider-type: community
 spec:
-  description: This task can be used to update image digest in a Git repo using kustomize
+  description: This task patches the gitops manifest
   params:
     - name: MANIFESTS_GIT
       type: string
-
     - name: GIT_REVISION
       type: string
     - name: GIT_BRANCH_REF
@@ -23,19 +23,19 @@ spec:
       type: string
     - name: GIT_COMMIT_MESSAGE
       type: string
-
+    - name: IMAGE_DIGEST
+      type: string
+    # remove?
     - name: CURRENT_IMAGE
       type: string
     - name: NEW_IMAGE
       type: string
-    - name: NEW_DIGEST
-      type: string
     - name: KUSTOMIZATION_PATH
       type: string
       
-  results:
-    - name: commit
-      description: The commit SHA
+  #results:
+  #  - name: commit
+  #    description: The commit SHA
 
   stepTemplate:
     envFrom:
@@ -112,10 +112,10 @@ spec:
         PR="pr-${REVISION:0:7}@$BRANCH"
 
         # append to AUDIT.md
-        AUDIT_MSG="$(date +%s): $PR $(params.GIT_PUSHER_NAME)/$(params.GIT_PUSHER_EMAIL) \n $(params.GIT_COMMIT_MESSAGE) \n---\n\n"
+        AUDIT_MSG="$(date +%s): $PR $(params.GIT_PUSHER_NAME)/$(params.GIT_PUSHER_EMAIL) \nMsg: $(params.GIT_COMMIT_MESSAGE) \nImage Digest:"
 
         echo "-> $AUDIT_MSG"
-        echo $AUDIT_MSG >> AUDIT.md
+        echo -e $AUDIT_MSG >> AUDIT.md
 
       volumeMounts:
         - mountPath: /gen-source

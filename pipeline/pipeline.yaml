@@ -80,7 +80,6 @@ spec:
       params:
         - name: MANIFESTS_GIT
           value: "$(params.MANIFESTS_GIT)"
-
         - name: GIT_REVISION
           value: $(params.GIT_REVISION)
         - name: GIT_BRANCH_REF
@@ -90,14 +89,15 @@ spec:
         - name: GIT_PUSHER_EMAIL
           value: $(params.GIT_PUSHER_EMAIL)
         - name: GIT_COMMIT_MESSAGE
-          value: $(params.GIT_COMMIT_MESSAGE)
-          
+          value: $(params.GIT_COMMIT_MESSAGE)  
+        - name: IMAGE_DIGEST
+          value: $(params.GIT_REVISION)
+        
+        # remove
         - name: CURRENT_IMAGE
           value: $(params.IMAGE_STREAM)
         - name: NEW_IMAGE
           value: $(params.IMAGE_STREAM)
-        - name: NEW_DIGEST
-          value: $(params.GIT_REVISION)
         - name: KUSTOMIZATION_PATH
           value: app/dev
 
