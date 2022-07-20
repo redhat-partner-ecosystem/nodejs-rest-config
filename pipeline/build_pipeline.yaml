@@ -140,12 +140,13 @@ spec:
         - name: manifest
           workspace: audit
 
-    #- name: app-test
-    #  runAfter:
-    #    - git-clone
-    #  taskRef:
-    #    name: npm-test
-    #  workspaces:
-    #    - name: source
-    #      workspace: workspace
-
+    - name: rollout
+      params:
+        - name: SCRIPT
+          value: oc rollout latest dc/$(params.APP_NAME) -n "$(params.APP_NAME)-dev"
+      runAfter:
+        - tag-image-stream
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client
+        
