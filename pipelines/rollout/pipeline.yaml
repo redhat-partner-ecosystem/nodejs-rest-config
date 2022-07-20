@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: nodejs-gitops-build-pipeline
+  name: rollout-pipeline
 spec:
   params:
     - name: APP_NAME
@@ -9,7 +9,7 @@ spec:
       default: "nodejs-gitops"
 
   workspaces:
-    - name: release
+    - name: rollout
 
   tasks:
     
@@ -17,8 +17,8 @@ spec:
       params:
         - name: SCRIPT
           value: oc rollout latest dc/$(params.APP_NAME) -n "$(params.APP_NAME)-dev"
-      runAfter:
-        - tag-image-stream
+      #runAfter:
+      #  - tag-image-stream
       taskRef:
         kind: ClusterTask
         name: openshift-client

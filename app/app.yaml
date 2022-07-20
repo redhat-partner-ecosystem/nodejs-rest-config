@@ -71,3 +71,25 @@ spec:
     path: pipelines/build
     repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
     targetRevision: main
+--- 
+kind: Application
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: release-pipeline
+  namespace: openshift-gitops
+spec:
+  project: default-app-project
+  revisionHistoryLimit: 3
+  #syncPolicy:
+  #  automated:
+  #    prune: true
+  #    selfHeal: true
+  destination:
+    namespace: nodejs-gitops-pipeline
+    server: https://kubernetes.default.svc
+  source:
+    directory:
+      recurse: true
+    path: pipelines/rollout
+    repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
+    targetRevision: main
