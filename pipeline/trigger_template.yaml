@@ -53,7 +53,7 @@ spec:
             value: "https://github.com/redhat-capgemini-exchange/nodejs-gitops"
           
         pipelineRef:
-          name: pipeline-nodejs-gitops
+          name: nodejs-gitops-build-pipeline
 
         resources: []
         workspaces:
