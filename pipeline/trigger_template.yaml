@@ -22,7 +22,9 @@ spec:
         params:
           - name: APP_NAME
             value: nodejs-gitops
-          
+          - name: NAMESPACE
+            value: "nodejs-gitops-pipeline"
+
           - name: GIT_REPO
             value: "https://github.com/redhat-capgemini-exchange/nodejs-rest.git"
           - name: GIT_REVISION
