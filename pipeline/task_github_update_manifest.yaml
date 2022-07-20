@@ -82,11 +82,11 @@ spec:
         git config --global user.name "$(params.GIT_PUSHER_NAME)"
         git config pull.rebase true
 
-        # pull latest revision
-
-        git checkout -b $BRANCH
-
-        git pull origin $BRANCH
+        if [ "$BRANCH" != main ]; then
+          # pull latest revision if not on main
+          git checkout -b $BRANCH
+          git pull origin $BRANCH
+        fi
 
         REVISION=$(params.GIT_REVISION)
         PR="pr-${REVISION:0:7}@$BRANCH"
@@ -112,7 +112,7 @@ spec:
         PR="pr-${REVISION:0:7}@$BRANCH"
 
         # append to AUDIT.md
-        AUDIT_MSG="$(date +%s): $PR $(params.GIT_PUSHER_NAME)/$(params.GIT_PUSHER_EMAIL)   \n$(params.IMAGE_DIGEST)  \n'$(params.GIT_COMMIT_MESSAGE)'   \n\n"
+        AUDIT_MSG="$(date +%s): $PR $(params.GIT_PUSHER_NAME)/$(params.GIT_PUSHER_EMAIL)   \n$REVISION   \n$(params.IMAGE_DIGEST)  \n'$(params.GIT_COMMIT_MESSAGE)'   \n\n"
 
         echo "-> $AUDIT_MSG"
         echo -e $AUDIT_MSG >> AUDIT.md
@@ -148,7 +148,7 @@ spec:
         echo "-> pushing to branch $PR"
 
         COMMIT_MSG="$PR"
-        AUDIT_MSG="$(date +%s): $PR $(params.GIT_PUSHER_NAME)/$(params.GIT_PUSHER_EMAIL)  $(params.IMAGE_DIGEST)  $(params.GIT_COMMIT_MESSAGE)"
+        AUDIT_MSG="$(date +%s): $PR $(params.GIT_PUSHER_NAME)/$(params.GIT_PUSHER_EMAIL)  $REVISION   $(params.IMAGE_DIGEST)  $(params.GIT_COMMIT_MESSAGE)"
 
         git status
 
