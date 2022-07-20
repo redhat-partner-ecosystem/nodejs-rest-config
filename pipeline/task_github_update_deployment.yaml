@@ -32,9 +32,13 @@ spec:
       type: string
     - name: KUSTOMIZATION_PATH
       type: string
+  
+  #workspaces:
+  #  - description: The workspace consisting of maven project.
+  #    name: workspace
   workspaces:
-    - description: The workspace consisting of maven project.
-      name: workspace
+    - mountPath: /workspace/source
+      name: source
 
   results:
     - name: commit
@@ -54,26 +58,18 @@ spec:
 
         gh auth status
 
-    - name: update-digest
+        pwd
+
+        ls -la
+
+    - name: git-clone
       image: image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/gitops-cli:latest
-      workingDir: $(workspaces.workspace.path)
+      workingDir: $(workspaces.source.path)
+      volumeMounts:
+        - mountPath: /gen-source
+          name: gen-source
+
       script: |
-        # setup git and gh
-        echo "-> setup git and gh"
-
-        git config --global user.email "$(params.GIT_PUSHER_EMAIL)"
-
-        git config --global user.name "$(params.GIT_PUSHER_NAME)"
-
-        git config pull.rebase true
-
-        gh auth setup-git
-
-        # extract the branch ref
-        IFS="/" read -a branchref <<< "$(params.GIT_BRANCH_REF)"
-        
-        BRANCH="${branchref[-1]}"
-
         # clone the repo
         echo "-> cloning $(params.MANIFESTS_GIT)"
 
@@ -81,42 +77,8 @@ spec:
 
         git clone $(params.MANIFESTS_GIT) git-update-digest-workdir
 
-        cd git-update-digest-workdir
+        pwd
 
-        git checkout -b $BRANCH
+        ls -la
 
-        git pull origin $BRANCH
-
-        PR="pr-$(params.GIT_REVISION)"
-
-        git checkout -b $PR
-
-        # create a patch 
-        echo "-> patching kustomization.yaml"
-
-        echo "resources:\n\t$(params.NEW_IMAGE)$(date +%s)" > $(params.KUSTOMIZATION_PATH)/kustomization.yaml
-
-        # commit and push
-        echo "-> pushing to branch $PR"
-        
-        export COMMIT_MSG="$PR@$BRANCH"
-
-        export COMMIT_BODY="$COMMIT_MSG \n\n $(params.GIT_COMMIT_MESSAGE) \n\n $(params.GIT_PUSHER_NAME) - $(params.GIT_PUSHER_EMAIL)"
-
-        git commit -am "$COMMIT_MSG"
-        
-        git push origin $PR
-
-        # create a PR
-
-        gh pr create --base $BRANCH --head $PR --title "$COMMIT_MSG" --body "$COMMIT_BODY"
-
-        # Make sure we don't add a trailing newline to the result!
-        RESULT_SHA="$(git rev-parse HEAD | tr -d '\n')"
-        EXIT_CODE="$?"
-        if [ "$EXIT_CODE" != 0 ]
-        then
-          exit $EXIT_CODE
-        fi
-
-        echo -n "$RESULT_SHA" > $(results.commit.path)
+    
