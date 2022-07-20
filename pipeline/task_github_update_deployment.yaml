@@ -50,30 +50,73 @@ spec:
         echo "-> Validating authentication against github.com"
 
         gh auth status
-
-        pwd
-
-        ls -la
       
       volumeMounts:
         - mountPath: /gen-source
           name: gen-source
 
-    - name: git-clone
+    - name: git-clone-manifest
       image: image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/gitops-cli:latest
       workingDir: $(workspaces.manifest.path)
       
       script: |
+        # setup git and gh
+        echo "-> setup git and gh"
+
+        git config --global user.email "$(params.GIT_PUSHER_EMAIL)"
+
+        git config --global user.name "$(params.GIT_PUSHER_NAME)"
+
+        git config pull.rebase true
+
+        gh auth setup-git
+
+        # extract the branch ref
+        IFS="/" read -a branchref <<< "$(params.GIT_BRANCH_REF)"
+        
+        BRANCH="${branchref[-1]}"
+
         # clone the repo
         echo "-> cloning $(params.MANIFESTS_GIT)"
 
-        rm -rf git-update-digest-workdir
+        rm -rf manifest-workdir
 
-        git clone $(params.MANIFESTS_GIT) git-update-digest-workdir
+        git clone $(params.MANIFESTS_GIT) manifest-workdir
+
+        cd manifest-workdir
+
+        git checkout -b $BRANCH
+
+        git pull origin $BRANCH
+
+        PR="pr-$(params.GIT_REVISION)"
+
+        git checkout -b $PR
+
+      volumeMounts:
+        - mountPath: /gen-source
+          name: gen-source
+
+    - name: create-patch
+      image: image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/gitops-cli:latest
+      workingDir: $(workspaces.manifest.path)
+      
+      script: |
+        # extract the branch ref
+        IFS="/" read -a branchref <<< "$(params.GIT_BRANCH_REF)"
+        
+        BRANCH="${branchref[-1]}"
+
+        PR="pr-$(params.GIT_REVISION)"
+
+        # patch
+        echo "-> patching $(params.MANIFESTS_GIT)"
+
+        cd manifest-workdir
 
         pwd
 
-        ls -la
+        ls
 
       volumeMounts:
         - mountPath: /gen-source
