@@ -60,14 +60,8 @@ spec:
       workingDir: $(workspaces.manifest.path)
       
       script: |
-        # setup git and gh
-        echo "-> setup git and gh"
-
-        git config --global user.email "$(params.GIT_PUSHER_EMAIL)"
-
-        git config --global user.name "$(params.GIT_PUSHER_NAME)"
-
-        git config pull.rebase true
+        # setup gh cli
+        echo "-> setup gh"
 
         gh auth setup-git
 
@@ -85,11 +79,21 @@ spec:
 
         cd manifest-workdir
 
+        # setup git
+        git config --global user.email "$(params.GIT_PUSHER_EMAIL)"
+
+        git config --global user.name "$(params.GIT_PUSHER_NAME)"
+
+        git config pull.rebase true
+
+        # pull latest revision
+
         git checkout -b $BRANCH
 
         git pull origin $BRANCH
 
-        PR="pr-$(params.GIT_REVISION)"
+        REVISION=$(params.GIT_REVISION)
+        PR="pr-${REVISION:0:7}@$BRANCH"
 
         git checkout -b $PR
 
@@ -97,7 +101,28 @@ spec:
         - mountPath: /gen-source
           name: gen-source
 
-    - name: create-patch
+    - name: patch
+      image: image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/gitops-cli:latest
+      workingDir: $(workspaces.manifest.path)
+      
+      script: |
+        cd manifest-workdir
+
+        # extract the branch ref
+        IFS="/" read -a branchref <<< "$(params.GIT_BRANCH_REF)"
+        
+        BRANCH="${branchref[-1]}"
+        REVISION=$(params.GIT_REVISION)
+        PR="pr-${REVISION:0:7}@$BRANCH"
+
+        # append to AUDIT.md
+        echo "$(date +%s): $PR" >> AUDIT.md
+
+      volumeMounts:
+        - mountPath: /gen-source
+          name: gen-source
+
+    - name: create-pull-request
       image: image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/gitops-cli:latest
       workingDir: $(workspaces.manifest.path)
       
@@ -106,17 +131,30 @@ spec:
         IFS="/" read -a branchref <<< "$(params.GIT_BRANCH_REF)"
         
         BRANCH="${branchref[-1]}"
+        REVISION=$(params.GIT_REVISION)
+        PR="pr-${REVISION:0:7}@$BRANCH"
 
-        PR="pr-$(params.GIT_REVISION)"
-
-        # patch
-        echo "-> patching $(params.MANIFESTS_GIT)"
-
+        # setup git
         cd manifest-workdir
 
-        pwd
+        # setup gh CLI
+        gh auth setup-git
 
-        ls
+        # push branch
+        echo "-> pushing to branch $PR"
+
+        export COMMIT_MSG="MSG-$PR"
+        export COMMIT_BODY="BODY-$PR"
+
+        git status
+
+        git commit -am "$COMMIT_MSG"
+        
+        git push origin $PR
+
+        # create a pr
+
+        gh pr create --base $BRANCH --head $PR --title "$COMMIT_MSG" --body "$COMMIT_BODY"
 
       volumeMounts:
         - mountPath: /gen-source
