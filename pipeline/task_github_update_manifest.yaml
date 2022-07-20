@@ -112,7 +112,7 @@ spec:
         PR="pr-${REVISION:0:7}@$BRANCH"
 
         # append to AUDIT.md
-        AUDIT_MSG="$(date +%s): $PR $(params.GIT_PUSHER_NAME)/$(params.GIT_PUSHER_EMAIL) \nMsg: $(params.GIT_COMMIT_MESSAGE) \nImage Digest:"
+        AUDIT_MSG="$(date +%s): $PR $(params.GIT_PUSHER_NAME)/$(params.GIT_PUSHER_EMAIL)   \nDigest: $(params.IMAGE_DIGEST)  \n$(params.GIT_COMMIT_MESSAGE)   \n\n"
 
         echo "-> $AUDIT_MSG"
         echo -e $AUDIT_MSG >> AUDIT.md
