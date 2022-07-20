@@ -7,6 +7,16 @@ spec:
     - name: APP_NAME
       type: string
       default: "nodejs-gitops"
+    - name: NAMESPACE
+      type: string
+      default: "nodejs-gitops-dev"
+
+    - name: GIT_REVISION
+      type: string
+      default: develop
+    - name: GIT_BRANCH_REF
+      type: string
+      default: "foo/bar/develop"
 
   workspaces:
     - name: rollout
@@ -16,7 +26,7 @@ spec:
     - name: noop
       params:
       - name: msg
-        value: $(params.APP_NAME)
+        value: "$(params.APP_NAME) - $(params.GIT_REVISION) - $(params.GIT_BRANCH_REF)"
       taskRef:
         kind: Task
         name: noop

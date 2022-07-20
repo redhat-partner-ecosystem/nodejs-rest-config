@@ -25,6 +25,11 @@ spec:
           - name: NAMESPACE
             value: "nodejs-gitops-pipeline"
 
+          - name: GIT_REVISION
+            value: $(tt.params.git-revision)
+          - name: GIT_BRANCH_REF
+            value: $(tt.params.git-branch-ref)
+
         pipelineRef:
           name: rollout-pipeline
 
