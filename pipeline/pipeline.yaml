@@ -101,7 +101,7 @@ spec:
           value: app/dev
 
       workspaces:
-        - name: source
+        - name: manifest
           workspace: workspace
 
     #- name: app-test
