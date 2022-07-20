@@ -143,7 +143,7 @@ spec:
         - name: SCRIPT
           value: oc rollout latest dc/$(params.APP_NAME) -n "$(params.APP_NAME)-dev"
       runAfter:
-        - tag-image-stream
+        - tag-image
       taskRef:
         kind: ClusterTask
         name: openshift-client
