@@ -62,12 +62,10 @@ spec:
       script: |
         # setup gh cli
         echo "-> setup gh"
-
         gh auth setup-git
 
         # extract the branch ref
         IFS="/" read -a branchref <<< "$(params.GIT_BRANCH_REF)"
-        
         BRANCH="${branchref[-1]}"
 
         # clone the repo
@@ -81,9 +79,7 @@ spec:
 
         # setup git
         git config --global user.email "$(params.GIT_PUSHER_EMAIL)"
-
         git config --global user.name "$(params.GIT_PUSHER_NAME)"
-
         git config pull.rebase true
 
         # pull latest revision
@@ -101,7 +97,7 @@ spec:
         - mountPath: /gen-source
           name: gen-source
 
-    - name: patch
+    - name: patch-manifest
       image: image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/gitops-cli:latest
       workingDir: $(workspaces.manifest.path)
       
@@ -116,7 +112,10 @@ spec:
         PR="pr-${REVISION:0:7}@$BRANCH"
 
         # append to AUDIT.md
-        echo "$(date +%s): $PR" >> AUDIT.md
+        AUDIT_MSG="$(date +%s): $PR"
+
+        echo "-> $AUDIT_MSG"
+        echo $AUDIT_MSG >> AUDIT.md
 
       volumeMounts:
         - mountPath: /gen-source
@@ -140,7 +139,12 @@ spec:
         # setup gh CLI
         gh auth setup-git
 
-        # push branch
+        # setup git
+        git config --global user.email "$(params.GIT_PUSHER_EMAIL)"
+        git config --global user.name "$(params.GIT_PUSHER_NAME)"
+        git config pull.rebase true
+
+        # commit and push to branch
         echo "-> pushing to branch $PR"
 
         export COMMIT_MSG="MSG-$PR"
@@ -152,8 +156,7 @@ spec:
         
         git push origin $PR
 
-        # create a pr
-
+        # create a PR
         gh pr create --base $BRANCH --head $PR --title "$COMMIT_MSG" --body "$COMMIT_BODY"
 
       volumeMounts:
