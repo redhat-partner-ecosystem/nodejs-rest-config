@@ -53,7 +53,7 @@ spec:
 kind: Application
 apiVersion: argoproj.io/v1alpha1
 metadata:
-  name: app-config-pipeline
+  name: build-pipeline
   namespace: openshift-gitops
 spec:
   project: default-app-project
@@ -68,6 +68,6 @@ spec:
   source:
     directory:
       recurse: true
-    path: pipeline
+    path: pipelines/build
     repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
     targetRevision: main
