@@ -90,7 +90,7 @@ spec:
         - name: source
           workspace: workspace
 
-    - name: tag-image-stream
+    - name: tag-image
       taskRef:
         kind: ClusterTask
         name: tag-image-stream
@@ -148,3 +148,16 @@ spec:
         kind: ClusterTask
         name: openshift-client
         
+    - name: label-dc
+      params:
+        - name: APP_NAME
+          value: $(params.APP_NAME)
+        - name: GIT_REVISION
+          value: $(params.GIT_REVISION)
+        - name: NAMESPACE
+          value: "$(params.APP_NAME)-dev"
+      runAfter:
+        - rollout
+      taskRef:
+        kind: ClusterTask
+        name: tag-deployment-config
