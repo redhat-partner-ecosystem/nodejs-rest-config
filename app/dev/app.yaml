@@ -22,16 +22,6 @@ spec:
     resources: {}
     activeDeadlineSeconds: 21600
   triggers:
-    #- type: ImageChange
-    #  imageChangeParams:
-    #    automatic: true
-    #    containerNames:
-    #      - nodejs-gitops
-    #    from:
-    #      kind: ImageStreamTag
-    #      #name: 'nodejs-gitops:main'
-    #      name: 'nodejs-gitops:ab54eeb9f864e2878a5744263e7ce5a04a290e75'
-    #      namespace: nodejs-gitops-pipeline
     - type: ConfigChange
   replicas: 1
   revisionHistoryLimit: 10

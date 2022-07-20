@@ -14,9 +14,6 @@ spec:
     - name: GIT_REVISION
       type: string
       default: develop
-    - name: GIT_COMMIT
-      type: string
-      default: ""
     - name: GIT_BRANCH_REF
       type: string
       default: "foo/bar/develop"
@@ -48,12 +45,10 @@ spec:
     - name: MANIFESTS_GIT
       type: string
       default: "https://github.com/redhat-capgemini-exchange/nodejs-gitops"
-    - name: MANIFESTS_GIT_BRANCH
-      type: string
-      default: main
 
   workspaces:
     - name: workspace
+    - name: audit
 
   tasks:
     - name: git-clone
@@ -77,63 +72,63 @@ spec:
         - name: output
           workspace: workspace
 
-    - name: update-deployment
+    - name: build
+      params:
+        - name: IMAGE
+          value: $(params.IMAGE_STREAM)
+        - name: TLSVERIFY
+          value: "false"
+        - name: PATH_CONTEXT
+          value: $(params.PATH_CONTEXT)
+        - name: VERSION
+          value: $(params.BUILDER_VERSION)
       runAfter:
         - git-clone
       taskRef:
-        name: github-update-deployment
+        kind: ClusterTask
+        name: s2i-nodejs
+      workspaces:
+        - name: source
+          workspace: workspace
+
+    - name: update-manifest
+      runAfter:
+        - build
+      taskRef:
+        name: github-update-manifest
       params:
         - name: MANIFESTS_GIT
           value: "$(params.MANIFESTS_GIT)"
-        - name: MANIFESTS_GIT_BRANCH
-          value: "$(params.MANIFESTS_GIT_BRANCH)"
-
         - name: GIT_REVISION
-          value: $(params.GIT_COMMIT)
+          value: $(params.GIT_REVISION)
+        - name: GIT_BRANCH_REF
+          value: $(params.GIT_BRANCH_REF)
         - name: GIT_PUSHER_NAME
           value: $(params.GIT_PUSHER_NAME)
         - name: GIT_PUSHER_EMAIL
           value: $(params.GIT_PUSHER_EMAIL)
         - name: GIT_COMMIT_MESSAGE
           value: $(params.GIT_COMMIT_MESSAGE)
-          
+        - name: IMAGE_DIGEST
+          value: $(tasks.build.results.IMAGE_DIGEST)
+
+        # remove
         - name: CURRENT_IMAGE
           value: $(params.IMAGE_STREAM)
         - name: NEW_IMAGE
           value: $(params.IMAGE_STREAM)
-        - name: NEW_DIGEST
-          value: $(params.GIT_REVISION)
         - name: KUSTOMIZATION_PATH
           value: app/dev
 
       workspaces:
-        - name: workspace
-          workspace: workspace
+        - name: manifest
+          workspace: audit
 
     #- name: app-test
     #  runAfter:
     #    - git-clone
     #  taskRef:
     #    name: npm-test
-    #  workspaces:
-    #    - name: source
-    #      workspace: workspace
-
-    #- name: build
-    #  params:
-    #    - name: IMAGE
-    #      value: $(params.IMAGE_STREAM)
-    #    - name: TLSVERIFY
-    #      value: "false"
-    #    - name: PATH_CONTEXT
-    #      value: $(params.PATH_CONTEXT)
-    #    - name: VERSION
-    #      value: $(params.BUILDER_VERSION)
-    #  runAfter:
-    #    - git-clone
-    #  taskRef:
-    #    kind: ClusterTask
-    #    name: s2i-nodejs
     #  workspaces:
     #    - name: source
     #      workspace: workspace
