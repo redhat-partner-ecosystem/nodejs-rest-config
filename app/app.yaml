@@ -75,7 +75,7 @@ spec:
 kind: Application
 apiVersion: argoproj.io/v1alpha1
 metadata:
-  name: release-pipeline
+  name: rollout-pipeline
   namespace: openshift-gitops
 spec:
   project: default-app-project

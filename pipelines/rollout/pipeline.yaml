@@ -13,13 +13,11 @@ spec:
 
   tasks:
     
-    - name: rollout
+    - name: noop
       params:
-        - name: SCRIPT
-          value: oc rollout latest dc/$(params.APP_NAME) -n "$(params.APP_NAME)-dev"
-      #runAfter:
-      #  - tag-image-stream
+      - name: msg
+        value: $(params.APP_NAME)
       taskRef:
-        kind: ClusterTask
-        name: openshift-client
+        kind: Task
+        name: noop
         
