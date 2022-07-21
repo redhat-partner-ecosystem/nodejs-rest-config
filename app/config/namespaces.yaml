@@ -1,6 +1,16 @@
 kind: Namespace
 apiVersion: v1
 metadata:
+  name: nodejs-gitops-pipeline
+  labels:
+    argocd.argoproj.io/managed-by: openshift-gitops
+spec:
+  finalizers:
+    - kubernetes
+---
+kind: Namespace
+apiVersion: v1
+metadata:
   name: nodejs-gitops-develop
   labels:
     argocd.argoproj.io/managed-by: openshift-gitops
