@@ -41,7 +41,7 @@ spec:
   project: default-app-project
   revisionHistoryLimit: 3
   destination:
-    namespace: nodejs-gitops
+    namespace: nodejs-gitops-qa
     server: https://kubernetes.default.svc
   source:
     directory:
