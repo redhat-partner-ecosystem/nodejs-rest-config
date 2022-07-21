@@ -31,8 +31,8 @@ spec:
           name: rollout-pipeline
 
         resources: []
-        workspaces:
-          - name: rollout
-            persistentVolumeClaim:
-              claimName: rollout-workspace
+        #workspaces:
+        #  - name: rollout
+        #    persistentVolumeClaim:
+        #      claimName: rollout-workspace
           

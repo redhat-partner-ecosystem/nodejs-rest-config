@@ -13,8 +13,8 @@ spec:
     - name: GIT_BRANCH_REF
       type: string
       default: "foo/bar/develop"
-  workspaces:
-    - name: rollout
+  #workspaces:
+  #  - name: rollout
   tasks:
     - name: sync-app
       taskRef:
