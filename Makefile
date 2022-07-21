@@ -1,6 +1,6 @@
-PROD_NAMESPACE = nodejs-gitops
-DEV_NAMESPACE = nodejs-gitops-dev
-QA_NAMESPACE = nodejs-gitops-qa
+PROD_NAMESPACE = nodejs-gitops-main
+DEV_NAMESPACE = nodejs-gitops-develop
+QA_NAMESPACE = nodejs-gitops-release
 BUILD_NAMESPACE = nodejs-gitops-pipeline
 
 .PHONY: cleanup
