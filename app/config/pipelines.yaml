@@ -55,8 +55,36 @@ spec:
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: nodejs-dev-pipeline-rolebinding
+  name: nodejs-develop-pipeline-rolebinding
   namespace: nodejs-gitops-develop
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: pipeline
+    namespace: nodejs-gitops-pipeline
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: nodejs-release-pipeline-rolebinding
+  namespace: nodejs-gitops-release
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: pipeline
+    namespace: nodejs-gitops-pipeline
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: nodejs-main-pipeline-rolebinding
+  namespace: nodejs-gitops-main
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

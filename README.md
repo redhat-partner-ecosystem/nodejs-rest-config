@@ -2,7 +2,8 @@
 
 GitOps stuff for the [example nodejs](https://github.com/redhat-capgemini-exchange/nodejs-rest) app.
 
-## Deployment
+
+## Initial setup
 
 Bootstrap the installation:
 
@@ -10,7 +11,11 @@ Bootstrap the installation:
 oc apply -f app/app.yaml
 ```
 
-Deploy pipeline configs and secrets:
+### Configuration and secrets
+
+Make a copy of the `secrets/*.example.yaml` files and edit their contents to match your environment.
+
+Deploy the pipeline configs and secrets:
 
 ```shell
 oc apply -f secrets/github_secrets.yaml -n nodejs-gitops-pipeline
@@ -19,13 +24,15 @@ oc apply -f secrets/argocd_configmap.yaml -n nodejs-gitops-pipeline
 
 ```
 
-Deploy application secrets:
+Deploy the app secrets:
 
 ```shell
 oc apply -f secrets/app_secrets.yaml -n nodejs-gitops-develop
 oc apply -f secrets/app_secrets.yaml -n nodejs-gitops-release
 oc apply -f secrets/app_secrets.yaml -n nodejs-gitops-main
 ```
+
+### Webhooks
 
 Get the pipeline listener endpoints:
 
@@ -38,6 +45,7 @@ Configure the GitHub webhooks:
 * nodejs-gitops: host/port of route `el-rollout-pipeline`
 * nodejs-rest: host/port of route `el-build-pipeline`
 
-### References
+
+## References
 
 * [CIS Software Supply Chain Security Guide](https://github.com/aquasecurity/chain-bench/blob/main/docs/CIS-Software-Supply-Chain-Security-Guide-v1.0.pdf)
