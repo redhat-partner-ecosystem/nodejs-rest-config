@@ -17,53 +17,17 @@ status: {}
 kind: Application
 apiVersion: argoproj.io/v1alpha1
 metadata:
-  name: app-config-develop
+  name: nodejs-gitops-config
   namespace: openshift-gitops
 spec:
   project: default-app-project
   revisionHistoryLimit: 3
   destination:
-    namespace: nodejs-gitops-dev
+    namespace: "*"
     server: https://kubernetes.default.svc
   source:
     directory:
       recurse: true
-    path: app/develop
-    repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
-    targetRevision: main
----
-kind: Application
-apiVersion: argoproj.io/v1alpha1
-metadata:
-  name: app-config-release
-  namespace: openshift-gitops
-spec:
-  project: default-app-project
-  revisionHistoryLimit: 3
-  destination:
-    namespace: nodejs-gitops-qa
-    server: https://kubernetes.default.svc
-  source:
-    directory:
-      recurse: true
-    path: app/release
-    repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
-    targetRevision: main
----
-kind: Application
-apiVersion: argoproj.io/v1alpha1
-metadata:
-  name: app-config-main
-  namespace: openshift-gitops
-spec:
-  project: default-app-project
-  revisionHistoryLimit: 3
-  destination:
-    namespace: nodejs-gitops
-    server: https://kubernetes.default.svc
-  source:
-    directory:
-      recurse: true
-    path: app/main
+    path: app/config
     repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
     targetRevision: main

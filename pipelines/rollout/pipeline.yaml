@@ -13,10 +13,8 @@ spec:
     - name: GIT_BRANCH_REF
       type: string
       default: "foo/bar/develop"
-
   workspaces:
     - name: rollout
-
   tasks:
     
     - name: noop
@@ -30,5 +28,8 @@ spec:
         - input: $(params.GIT_BRANCH_REF)
           operator: in 
           values: ["refs/heads/release","refs/heads/main"]
+      workspaces:
+        - name: source
+          workspace: rollout
       
         
