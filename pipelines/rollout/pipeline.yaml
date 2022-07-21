@@ -16,20 +16,35 @@ spec:
   workspaces:
     - name: rollout
   tasks:
-    
-    - name: noop
+    - name: sync-app
       taskRef:
-        kind: Task
-        name: noop
+        kind: ClusterTask
+        name: argocd-sync-app
       params:
-      - name: msg
-        value: "$(params.APP_NAME) - $(params.GIT_REVISION) - $(params.GIT_BRANCH_REF)"
+        - name: APP_NAME
+          value: $(params.APP_NAME)
+        - name: GIT_BRANCH_REF
+          value: $(params.GIT_BRANCH_REF)
       when:
         - input: $(params.GIT_BRANCH_REF)
-          operator: in 
-          values: ["refs/heads/release","refs/heads/main"]
+          operator: in
+          values: ["refs/heads/release", "refs/heads/main"]
       workspaces:
         - name: source
           workspace: rollout
-      
-        
+
+    - name: label-dc
+      taskRef:
+        kind: ClusterTask
+        name: add-revision-label
+      params:
+        - name: APP_NAME
+          value: $(params.APP_NAME)
+        - name: GIT_REVISION
+          value: $(params.GIT_REVISION)
+        - name: GIT_BRANCH_REF
+          value: $(params.GIT_BRANCH_REF)
+        - name: RESOURCE
+          value: dc
+      runAfter:
+        - sync-app

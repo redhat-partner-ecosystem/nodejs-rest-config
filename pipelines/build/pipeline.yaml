@@ -109,7 +109,7 @@ spec:
         name: openshift-client
       params:
         - name: SCRIPT
-          value: oc rollout latest dc/$(params.APP_NAME) -n "$(params.APP_NAME)-dev"
+          value: oc rollout latest dc/$(params.APP_NAME) -n "$(params.APP_NAME)-develop"
       runAfter:
         - tag-image
       when:
@@ -120,21 +120,23 @@ spec:
     - name: label-dc
       taskRef:
         kind: ClusterTask
-        name: tag-deployment-config
+        name: add-revision-label
       params:
         - name: APP_NAME
           value: $(params.APP_NAME)
         - name: GIT_REVISION
           value: $(params.GIT_REVISION)
-        - name: NAMESPACE
-          value: "$(params.APP_NAME)-dev"
+        - name: GIT_BRANCH_REF
+          value: $(params.GIT_BRANCH_REF)
+        - name: RESOURCE
+          value: dc
       runAfter:
         - rollout
 
     - name: create-pr
       taskRef:
         kind: ClusterTask
-        name: github-rollout-pr
+        name: github-create-pr
       params:
         - name: CONFIG_GIT_REPO
           value: "$(params.CONFIG_GIT_REPO)"
