@@ -14,7 +14,7 @@ spec:
       recurse: true
     path: app/develop
     repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
-    targetRevision: main
+    targetRevision: develop
 ---
 kind: Application
 apiVersion: argoproj.io/v1alpha1
@@ -32,7 +32,7 @@ spec:
       recurse: true
     path: app/release
     repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
-    targetRevision: main
+    targetRevision: release
 ---
 kind: Application
 apiVersion: argoproj.io/v1alpha1

@@ -37,7 +37,7 @@ spec:
     spec:
       containers:
         - name: nodejs-gitops
-          image: "image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops:895e8d18df971ff9afaa0062931be4e74f19bb32"
+          image: "image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops:release"
           imagePullPolicy: IfNotPresent
           resources:
             limits:
