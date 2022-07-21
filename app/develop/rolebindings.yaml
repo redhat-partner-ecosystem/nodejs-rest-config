@@ -10,4 +10,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: default
-    namespace: nodejs-gitops-dev
+    namespace: nodejs-gitops-develop

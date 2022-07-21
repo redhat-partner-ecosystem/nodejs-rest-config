@@ -17,7 +17,7 @@ status: {}
 kind: Application
 apiVersion: argoproj.io/v1alpha1
 metadata:
-  name: app-config-dev
+  name: app-config-develop
   namespace: openshift-gitops
 spec:
   project: default-app-project
@@ -35,7 +35,7 @@ spec:
 kind: Application
 apiVersion: argoproj.io/v1alpha1
 metadata:
-  name: app-config-qa
+  name: app-config-release
   namespace: openshift-gitops
 spec:
   project: default-app-project
@@ -53,7 +53,7 @@ spec:
 kind: Application
 apiVersion: argoproj.io/v1alpha1
 metadata:
-  name: app-config-prod
+  name: app-config-main
   namespace: openshift-gitops
 spec:
   project: default-app-project

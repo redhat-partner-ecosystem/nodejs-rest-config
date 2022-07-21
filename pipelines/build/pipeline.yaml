@@ -41,11 +41,9 @@ spec:
       type: string
       default: >-
         image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops
-    
   workspaces:
     - name: workspace
     - name: audit
-
   tasks:
     - name: git-clone
       taskRef:
@@ -141,7 +139,7 @@ spec:
         - name: CONFIG_GIT_REPO
           value: "$(params.CONFIG_GIT_REPO)"
         - name: PATH_CONTEXT
-          value: "."
+          value: "app"
         - name: GIT_REVISION
           value: $(params.GIT_REVISION)
         - name: GIT_BRANCH_REF

@@ -22,9 +22,6 @@ spec:
         params:
           - name: APP_NAME
             value: nodejs-gitops
-          - name: NAMESPACE
-            value: "nodejs-gitops-pipeline"
-
           - name: GIT_REVISION
             value: $(tt.params.git-revision)
           - name: GIT_BRANCH_REF

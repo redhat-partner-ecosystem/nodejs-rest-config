@@ -7,10 +7,6 @@ spec:
     - name: APP_NAME
       type: string
       default: "nodejs-gitops"
-    - name: NAMESPACE
-      type: string
-      default: "nodejs-gitops-dev"
-
     - name: GIT_REVISION
       type: string
       default: develop
@@ -24,10 +20,15 @@ spec:
   tasks:
     
     - name: noop
-      params:
-      - name: msg
-        value: "$(params.APP_NAME) - $(params.GIT_REVISION) - $(params.GIT_BRANCH_REF)"
       taskRef:
         kind: Task
         name: noop
+      params:
+      - name: msg
+        value: "$(params.APP_NAME) - $(params.GIT_REVISION) - $(params.GIT_BRANCH_REF)"
+      when:
+        - input: $(params.GIT_BRANCH_REF)
+          operator: in 
+          values: ["refs/heads/release","refs/heads/main"]
+      
         

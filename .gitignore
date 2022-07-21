@@ -3,3 +3,4 @@ secret.yaml
 secrets.yaml
 *_secret.yaml
 *_secrets.yaml
+*_configmap.yaml
