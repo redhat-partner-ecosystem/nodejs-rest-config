@@ -1,9 +1,0 @@
-kind: Namespace
-apiVersion: v1
-metadata:
-  name: nodejs-gitops-release
-  labels:
-    argocd.argoproj.io/managed-by: openshift-gitops
-spec:
-  finalizers:
-    - kubernetes
