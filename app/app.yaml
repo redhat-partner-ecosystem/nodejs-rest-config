@@ -28,9 +28,27 @@ spec:
   source:
     directory:
       recurse: true
-    path: app/dev
+    path: app/develop
     repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
-    targetRevision: main
+    targetRevision: develop
+---
+kind: Application
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: app-config-qa
+  namespace: openshift-gitops
+spec:
+  project: default-app-project
+  revisionHistoryLimit: 3
+  destination:
+    namespace: nodejs-gitops
+    server: https://kubernetes.default.svc
+  source:
+    directory:
+      recurse: true
+    path: app/release
+    repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
+    targetRevision: release
 ---
 kind: Application
 apiVersion: argoproj.io/v1alpha1
@@ -46,50 +64,6 @@ spec:
   source:
     directory:
       recurse: true
-    path: app/prod
-    repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
-    targetRevision: main
----
-kind: Application
-apiVersion: argoproj.io/v1alpha1
-metadata:
-  name: build-pipeline
-  namespace: openshift-gitops
-spec:
-  project: default-app-project
-  revisionHistoryLimit: 3
-  #syncPolicy:
-  #  automated:
-  #    prune: true
-  #    selfHeal: true
-  destination:
-    namespace: nodejs-gitops-pipeline
-    server: https://kubernetes.default.svc
-  source:
-    directory:
-      recurse: true
-    path: pipelines/build
-    repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
-    targetRevision: main
---- 
-kind: Application
-apiVersion: argoproj.io/v1alpha1
-metadata:
-  name: rollout-pipeline
-  namespace: openshift-gitops
-spec:
-  project: default-app-project
-  revisionHistoryLimit: 3
-  #syncPolicy:
-  #  automated:
-  #    prune: true
-  #    selfHeal: true
-  destination:
-    namespace: nodejs-gitops-pipeline
-    server: https://kubernetes.default.svc
-  source:
-    directory:
-      recurse: true
-    path: pipelines/rollout
+    path: app/main
     repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
     targetRevision: main

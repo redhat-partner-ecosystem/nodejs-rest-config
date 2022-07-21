@@ -1,0 +1,94 @@
+kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  annotations:
+    description: Defines how to deploy the application server
+  name: nodejs-gitops
+  labels:
+    app: nodejs-gitops
+    app.openshift.io/runtime: nodejs
+spec:
+  strategy:
+    type: Rolling
+    rollingParams:
+      updatePeriodSeconds: 1
+      intervalSeconds: 1
+      timeoutSeconds: 600
+      maxUnavailable: 25%
+      maxSurge: 25%
+    #type: Recreate
+    #recreateParams:
+    #  timeoutSeconds: 600
+    resources: {}
+    activeDeadlineSeconds: 21600
+  triggers:
+    - type: ConfigChange
+  replicas: 1
+  revisionHistoryLimit: 10
+  test: false
+  selector:
+    name: nodejs-gitops
+  template:
+    metadata:
+      name: nodejs-gitops
+      labels:
+        app.openshift.io/runtime: nodejs
+        name: nodejs-gitops
+    spec:
+      containers:
+        - name: nodejs-gitops
+          image: "image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops:develop"
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 3
+            timeoutSeconds: 3
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+            - name: DATABASE_SERVICE_NAME
+              value: postgresql
+            - name: POSTGRESQL_DATABASE
+              value: my_data
+            - name: POSTGRESQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: nodejs-gitops-secrets
+                  key: database-user
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nodejs-gitops-secrets
+                  key: database-password
+            - name: POSTGRESQL_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nodejs-gitops-secrets
+                  key: database-admin-password
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          terminationMessagePolicy: File
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler

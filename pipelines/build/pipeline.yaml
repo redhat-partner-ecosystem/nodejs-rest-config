@@ -10,11 +10,9 @@ spec:
     - name: NAMESPACE
       type: string
       default: "nodejs-gitops-pipeline"
-
-    - name: MANIFESTS_GIT
+    - name: CONFIG_GIT_REPO
       type: string
       default: "https://github.com/redhat-capgemini-exchange/nodejs-gitops"
-
     - name: GIT_REPO
       type: string
       default: "https://github.com/redhat-capgemini-exchange/nodejs-rest.git"
@@ -33,24 +31,26 @@ spec:
     - name: GIT_COMMIT_MESSAGE
       type: string
       default: "commit"
-
-    - name: IMAGE_STREAM
-      type: string
-      default: >-
-        image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops
     - name: BUILDER_VERSION
       type: string
       default: "14-ubi8"
     - name: PATH_CONTEXT
       type: string
       default: "."  
-
+    - name: IMAGE_STREAM
+      type: string
+      default: >-
+        image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops
+    
   workspaces:
     - name: workspace
     - name: audit
 
   tasks:
     - name: git-clone
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
       params:
         - name: url
           value: $(params.GIT_REPO)
@@ -64,14 +64,14 @@ spec:
           value: "1"
         - name: deleteExisting
           value: "true"
-      taskRef:
-        kind: ClusterTask
-        name: git-clone
       workspaces:
         - name: output
           workspace: workspace
 
     - name: build
+      taskRef:
+        kind: ClusterTask
+        name: s2i-nodejs
       params:
         - name: IMAGE
           value: $(params.IMAGE_STREAM)
@@ -83,9 +83,6 @@ spec:
           value: $(params.BUILDER_VERSION)
       runAfter:
         - git-clone
-      taskRef:
-        kind: ClusterTask
-        name: s2i-nodejs
       workspaces:
         - name: source
           workspace: workspace
@@ -108,15 +105,43 @@ spec:
         - name: NAMESPACE
           value: $(params.NAMESPACE)
 
-    - name: update-manifest
-      runAfter:
-        - build
+    - name: rollout
       taskRef:
         kind: ClusterTask
-        name: github-update-manifest
+        name: openshift-client
       params:
-        - name: MANIFESTS_GIT
-          value: "$(params.MANIFESTS_GIT)"
+        - name: SCRIPT
+          value: oc rollout latest dc/$(params.APP_NAME) -n "$(params.APP_NAME)-dev"
+      runAfter:
+        - tag-image
+      when:
+        - input: $(params.GIT_BRANCH_REF)
+          operator: in 
+          values: ["refs/heads/develop"]
+      
+    - name: label-dc
+      taskRef:
+        kind: ClusterTask
+        name: tag-deployment-config
+      params:
+        - name: APP_NAME
+          value: $(params.APP_NAME)
+        - name: GIT_REVISION
+          value: $(params.GIT_REVISION)
+        - name: NAMESPACE
+          value: "$(params.APP_NAME)-dev"
+      runAfter:
+        - rollout
+
+    - name: create-pr
+      taskRef:
+        kind: ClusterTask
+        name: github-rollout-pr
+      params:
+        - name: CONFIG_GIT_REPO
+          value: "$(params.CONFIG_GIT_REPO)"
+        - name: PATH_CONTEXT
+          value: "."
         - name: GIT_REVISION
           value: $(params.GIT_REVISION)
         - name: GIT_BRANCH_REF
@@ -129,35 +154,12 @@ spec:
           value: $(params.GIT_COMMIT_MESSAGE)
         - name: IMAGE_DIGEST
           value: $(tasks.build.results.IMAGE_DIGEST)
-
-        # remove
-        - name: KUSTOMIZATION_PATH
-          value: app/dev
-
+      runAfter:
+        - tag-image
+      when:
+        - input: $(params.GIT_BRANCH_REF)
+          operator: in 
+          values: ["refs/heads/release","refs/heads/main"]
       workspaces:
         - name: manifest
           workspace: audit
-
-    - name: rollout
-      params:
-        - name: SCRIPT
-          value: oc rollout latest dc/$(params.APP_NAME) -n "$(params.APP_NAME)-dev"
-      runAfter:
-        - tag-image
-      taskRef:
-        kind: ClusterTask
-        name: openshift-client
-        
-    - name: label-dc
-      params:
-        - name: APP_NAME
-          value: $(params.APP_NAME)
-        - name: GIT_REVISION
-          value: $(params.GIT_REVISION)
-        - name: NAMESPACE
-          value: "$(params.APP_NAME)-dev"
-      runAfter:
-        - rollout
-      taskRef:
-        kind: ClusterTask
-        name: tag-deployment-config

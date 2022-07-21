@@ -24,7 +24,8 @@ spec:
             value: nodejs-gitops
           - name: NAMESPACE
             value: "nodejs-gitops-pipeline"
-
+          - name: CONFIG_GIT_REPO
+            value: "https://github.com/redhat-capgemini-exchange/nodejs-gitops"
           - name: GIT_REPO
             value: "https://github.com/redhat-capgemini-exchange/nodejs-rest.git"
           - name: GIT_REVISION
@@ -37,20 +38,15 @@ spec:
             value: $(tt.params.pusher-email)
           - name: GIT_COMMIT_MESSAGE
             value: $(tt.params.git-commit-message)
-
           - name: BUILDER_VERSION
             value: "14-ubi8"
           - name: PATH_CONTEXT
             value: "."
-
           - name: IMAGE_STREAM
             value: >-
               image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops
           - name: IMAGE_TAG
             value: latest
-
-          - name: MANIFESTS_GIT
-            value: "https://github.com/redhat-capgemini-exchange/nodejs-gitops"
           
         pipelineRef:
           name: build-pipeline

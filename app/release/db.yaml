@@ -2,70 +2,58 @@ kind: DeploymentConfig
 apiVersion: apps.openshift.io/v1
 metadata:
   annotations:
-    description: Defines how to deploy the application server
-  name: nodejs-gitops
+    description: Defines how to deploy the database
+  name: postgresql
   labels:
     app: nodejs-gitops
-    app.openshift.io/runtime: nodejs
 spec:
   strategy:
-    type: Rolling
-    rollingParams:
-      updatePeriodSeconds: 1
-      intervalSeconds: 1
+    type: Recreate
+    recreateParams:
       timeoutSeconds: 600
-      maxUnavailable: 25%
-      maxSurge: 25%
-    #type: Recreate
-    #recreateParams:
-    #  timeoutSeconds: 600
     resources: {}
     activeDeadlineSeconds: 21600
   triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - postgresql
+        from:
+          kind: ImageStreamTag
+          namespace: openshift
+          name: 'postgresql:12-el8'
     - type: ConfigChange
   replicas: 1
   revisionHistoryLimit: 10
   test: false
   selector:
-    name: nodejs-gitops
+    name: postgresql
   template:
     metadata:
-      name: nodejs-gitops
+      name: postgresql
       labels:
-        app.openshift.io/runtime: nodejs
-        name: nodejs-gitops
+        name: postgresql
     spec:
+      volumes:
+        - name: postgresql-data
+          persistentVolumeClaim:
+            claimName: postgresql
       containers:
-        - name: nodejs-gitops
-          image: "image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops:main"
-          imagePullPolicy: IfNotPresent
-          resources:
+        - resources:
             limits:
               memory: 256Mi
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 3
-            timeoutSeconds: 3
-            periodSeconds: 10
-            successThreshold: 1
-            failureThreshold: 3
           terminationMessagePath: /dev/termination-log
+          name: postgresql
           livenessProbe:
-            httpGet:
-              path: /
-              port: 8080
-              scheme: HTTP
+            tcpSocket:
+              port: 5432
             initialDelaySeconds: 30
-            timeoutSeconds: 3
+            timeoutSeconds: 1
             periodSeconds: 10
             successThreshold: 1
             failureThreshold: 3
           env:
-            - name: DATABASE_SERVICE_NAME
-              value: postgresql
             - name: POSTGRESQL_DATABASE
               value: my_data
             - name: POSTGRESQL_USER
@@ -84,8 +72,12 @@ spec:
                   name: nodejs-gitops-secrets
                   key: database-admin-password
           ports:
-            - containerPort: 8080
+            - containerPort: 5432
               protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: postgresql-data
+              mountPath: /var/lib/pgsql/data
           terminationMessagePolicy: File
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
@@ -96,38 +88,41 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: nodejs-gitops
+  name: postgresql
   labels:
     app: nodejs-gitops
   annotations:
-    description: Exposes and load balances the application pods
-    service.alpha.openshift.io/dependencies: '[{"name": "postgresql", "kind": "Service"}]'
+    description: Exposes the database server
 spec:
   ipFamilies:
     - IPv4
   ports:
-    - name: web
+    - name: postgresql
       protocol: TCP
-      port: 8080
-      targetPort: 8080
+      port: 5432
+      targetPort: 5432
   internalTrafficPolicy: Cluster
   type: ClusterIP
   ipFamilyPolicy: SingleStack
   sessionAffinity: None
   selector:
-    name: nodejs-gitops
+    name: postgresql
 status:
   loadBalancer: {}
 --- 
-kind: Route
-apiVersion: route.openshift.io/v1
+kind: PersistentVolumeClaim
+apiVersion: v1
 metadata:
-  name: nodejs-gitops
+  name: postgresql
+  finalizers:
+    - kubernetes.io/pvc-protection
   labels:
     app: nodejs-gitops
 spec:
-  to:
-    kind: Service
-    name: nodejs-gitops
-    weight: 100
-  wildcardPolicy: None
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: gp2
+  volumeMode: Filesystem

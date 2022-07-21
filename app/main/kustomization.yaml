@@ -3,3 +3,4 @@ resources:
   - rolebindings.yaml
   - app.yaml
   - db.yaml
+  - networking.yaml
