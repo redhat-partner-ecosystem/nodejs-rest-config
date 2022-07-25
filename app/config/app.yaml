@@ -1,53 +1,53 @@
 kind: Application
 apiVersion: argoproj.io/v1alpha1
 metadata:
-  name: nodejs-gitops-develop
+  name: nodejs-rest-develop
   namespace: openshift-gitops
 spec:
   project: default-app-project
   revisionHistoryLimit: 3
   destination:
-    namespace: nodejs-gitops-develop
+    namespace: nodejs-rest-develop
     server: https://kubernetes.default.svc
   source:
     directory:
       recurse: false
     path: app/develop
-    repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
-    targetRevision: develop
+    repoURL: https://github.com/redhat-capgemini-exchange/nodejs-rest-config
+    targetRevision: main
 ---
 kind: Application
 apiVersion: argoproj.io/v1alpha1
 metadata:
-  name: nodejs-gitops-release
+  name: nodejs-rest-release
   namespace: openshift-gitops
 spec:
   project: default-app-project
   revisionHistoryLimit: 3
   destination:
-    namespace: nodejs-gitops-release
+    namespace: nodejs-rest-release
     server: https://kubernetes.default.svc
   source:
     directory:
       recurse: false
     path: app/release
-    repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
-    targetRevision: release
+    repoURL: https://github.com/redhat-capgemini-exchange/nodejs-rest-config
+    targetRevision: main
 ---
 kind: Application
 apiVersion: argoproj.io/v1alpha1
 metadata:
-  name: nodejs-gitops-main
+  name: nodejs-rest-main
   namespace: openshift-gitops
 spec:
   project: default-app-project
   revisionHistoryLimit: 3
   destination:
-    namespace: nodejs-gitops-main
+    namespace: nodejs-rest-main
     server: https://kubernetes.default.svc
   source:
     directory:
       recurse: false
     path: app/main
-    repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
+    repoURL: https://github.com/redhat-capgemini-exchange/nodejs-rest-config
     targetRevision: main

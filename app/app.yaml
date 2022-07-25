@@ -29,5 +29,5 @@ spec:
     directory:
       recurse: false
     path: app/config
-    repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
+    repoURL: https://github.com/redhat-capgemini-exchange/nodejs-rest-config
     targetRevision: main
