@@ -27,9 +27,9 @@ oc apply -f secrets/argocd_configmap.yaml -n nodejs-gitops-pipeline
 Deploy the app secrets:
 
 ```shell
-oc apply -f secrets/app_secrets.yaml -n nodejs-gitops-develop
-oc apply -f secrets/app_secrets.yaml -n nodejs-gitops-release
-oc apply -f secrets/app_secrets.yaml -n nodejs-gitops-main
+oc apply -f secrets/app_secrets.yaml -n nodejs-rest-develop
+oc apply -f secrets/app_secrets.yaml -n nodejs-rest-release
+oc apply -f secrets/app_secrets.yaml -n nodejs-rest-main
 ```
 
 ### Webhooks
