@@ -1,8 +1,8 @@
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: nodejs-prod-image-puller-rolebinding
-  namespace: nodejs-gitops-pipeline
+  name: nodejs-main-image-puller-rolebinding
+  namespace: nodejs-rest-develop
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -10,4 +10,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: default
-    namespace: nodejs-gitops-main
+    namespace: nodejs-rest-main

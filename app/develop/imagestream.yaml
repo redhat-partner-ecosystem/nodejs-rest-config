@@ -1,0 +1,11 @@
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  name: nodejs-rest
+  labels:
+    app: nodejs-rest
+  annotations:
+    description: nodejs-rest application image
+spec:
+  lookupPolicy:
+    local: false

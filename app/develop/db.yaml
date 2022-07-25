@@ -5,7 +5,7 @@ metadata:
     description: Defines how to deploy the database
   name: postgresql
   labels:
-    app: nodejs-gitops
+    app: nodejs-rest
 spec:
   strategy:
     type: Recreate
@@ -59,17 +59,17 @@ spec:
             - name: POSTGRESQL_USER
               valueFrom:
                 secretKeyRef:
-                  name: nodejs-gitops-secrets
+                  name: nodejs-rest-secrets
                   key: database-user
             - name: POSTGRESQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: nodejs-gitops-secrets
+                  name: nodejs-rest-secrets
                   key: database-password
             - name: POSTGRESQL_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: nodejs-gitops-secrets
+                  name: nodejs-rest-secrets
                   key: database-admin-password
           ports:
             - containerPort: 5432
@@ -90,7 +90,7 @@ apiVersion: v1
 metadata:
   name: postgresql
   labels:
-    app: nodejs-gitops
+    app: nodejs-rest
   annotations:
     description: Exposes the database server
 spec:
@@ -117,7 +117,7 @@ metadata:
   finalizers:
     - kubernetes.io/pvc-protection
   labels:
-    app: nodejs-gitops
+    app: nodejs-rest
 spec:
   accessModes:
     - ReadWriteOnce

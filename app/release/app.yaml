@@ -3,9 +3,9 @@ apiVersion: apps.openshift.io/v1
 metadata:
   annotations:
     description: Defines how to deploy the app
-  name: nodejs-gitops
+  name: nodejs-rest
   labels:
-    app: nodejs-gitops
+    app: nodejs-rest
     app.openshift.io/runtime: nodejs
 spec:
   strategy:
@@ -27,17 +27,17 @@ spec:
   revisionHistoryLimit: 10
   test: false
   selector:
-    name: nodejs-gitops
+    name: nodejs-rest
   template:
     metadata:
-      name: nodejs-gitops
+      name: nodejs-rest
       labels:
         app.openshift.io/runtime: nodejs
-        name: nodejs-gitops
+        name: nodejs-rest
     spec:
       containers:
-        - name: nodejs-gitops
-          image: "image-registry.openshift-image-registry.svc:5000/nodejs-gitops-pipeline/nodejs-gitops:release"
+        - name: nodejs-rest
+          image: "image-registry.openshift-image-registry.svc:5000/nodejs-rest-pipeline/nodejs-rest:release"
           imagePullPolicy: IfNotPresent
           resources:
             limits:
@@ -71,17 +71,17 @@ spec:
             - name: POSTGRESQL_USER
               valueFrom:
                 secretKeyRef:
-                  name: nodejs-gitops-secrets
+                  name: nodejs-rest-secrets
                   key: database-user
             - name: POSTGRESQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: nodejs-gitops-secrets
+                  name: nodejs-rest-secrets
                   key: database-password
             - name: POSTGRESQL_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: nodejs-gitops-secrets
+                  name: nodejs-rest-secrets
                   key: database-admin-password
           ports:
             - containerPort: 8080

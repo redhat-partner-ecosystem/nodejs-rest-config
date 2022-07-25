@@ -1,9 +1,9 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: nodejs-gitops
+  name: nodejs-rest
   labels:
-    app: nodejs-gitops
+    app: nodejs-rest
   annotations:
     description: Exposes and load balances the application pods
     service.alpha.openshift.io/dependencies: '[{"name": "postgresql", "kind": "Service"}]'
@@ -20,19 +20,19 @@ spec:
   ipFamilyPolicy: SingleStack
   sessionAffinity: None
   selector:
-    name: nodejs-gitops
+    name: nodejs-rest
 status:
   loadBalancer: {}
 --- 
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: nodejs-gitops
+  name: nodejs-rest
   labels:
-    app: nodejs-gitops
+    app: nodejs-rest
 spec:
   to:
     kind: Service
-    name: nodejs-gitops
+    name: nodejs-rest
     weight: 100
   wildcardPolicy: None
