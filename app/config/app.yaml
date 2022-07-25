@@ -11,7 +11,7 @@ spec:
     server: https://kubernetes.default.svc
   source:
     directory:
-      recurse: true
+      recurse: false
     path: app/develop
     repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
     targetRevision: develop
@@ -29,7 +29,7 @@ spec:
     server: https://kubernetes.default.svc
   source:
     directory:
-      recurse: true
+      recurse: false
     path: app/release
     repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
     targetRevision: release
@@ -47,7 +47,7 @@ spec:
     server: https://kubernetes.default.svc
   source:
     directory:
-      recurse: true
+      recurse: false
     path: app/main
     repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
     targetRevision: main

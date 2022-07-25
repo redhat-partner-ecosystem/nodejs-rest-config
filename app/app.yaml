@@ -27,7 +27,7 @@ spec:
     server: https://kubernetes.default.svc
   source:
     directory:
-      recurse: true
+      recurse: false
     path: app/config
     repoURL: https://github.com/redhat-capgemini-exchange/nodejs-gitops
     targetRevision: main
