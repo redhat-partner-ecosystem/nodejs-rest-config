@@ -37,7 +37,7 @@ spec:
     spec:
       containers:
         - name: nodejs-rest
-          image: "image-registry.openshift-image-registry.svc:5000/nodejs-rest-pipeline/nodejs-rest:release"
+          image: "image-registry.openshift-image-registry.svc:5000/nodejs-rest-develop/nodejs-rest:release"
           imagePullPolicy: IfNotPresent
           resources:
             limits:
