@@ -15,15 +15,6 @@ oc apply -f app/app.yaml
 
 Make a copy of the `secrets/*.example.yaml` files and edit their contents to match your environment.
 
-Deploy the pipeline configs and secrets:
-
-```shell
-oc apply -f secrets/github_secrets.yaml -n nodejs-gitops-pipeline
-oc apply -f secrets/argocd_secrets.yaml -n nodejs-gitops-pipeline
-oc apply -f secrets/argocd_configmap.yaml -n nodejs-gitops-pipeline
-
-```
-
 Deploy the app secrets:
 
 ```shell
